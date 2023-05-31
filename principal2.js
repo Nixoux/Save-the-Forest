@@ -140,6 +140,43 @@ scene("accueil", () => {
 
 
 
+    const ProtoRec = add([
+        rect(300, 80, { radius: 4 }),
+        pos(center().x, center().y - 15),
+        color(255, 255, 255),
+        anchor("top"),
+        fixed(),
+        z(2),
+        outline(1)
+    ]);
+// 
+    const ProtoTxtTitre = add([
+        text("Prototype par Nicolas VERDES", {
+            size: 15,
+            align: "center",
+            font: "alagard",
+            
+        }), 
+        color(0, 0, 0),
+        z(3),
+        anchor("center"),
+        pos(center().x, center().y + 2)
+    ]);
+
+    const ProtoTxt = add([
+        text("Dans Save the Forest, vous incarnez une petite sorcière qui part à l'aventure pour défendre sa forêt d'une plante invasive. Dans sa version finale, le jeu mélangera narration et séquence d'action.", {
+            size: 10,
+            align: "left",
+            font: "alagard",
+            width: width() - 150,
+            
+        }), 
+        color(0, 0, 0),
+        z(3),
+        anchor("center"),
+        pos(center().x, center().y + 35)
+    ]);
+
     //Instruction pour commencer le jeu 
     const instru = add([
         text("Appuie sur [wavy]ENTER[/wavy] pour jouer!", {
@@ -901,7 +938,7 @@ pauseMenu.paused = true;
             DefaiteWitch.play("idle",{ speed: 3})
 
             const TextDefaite = add([
-                text("Malheureusement, Ambroisie à eu raison de toi", {
+                text("Malheureusement, Ambroisie a eu raison de toi", {
                     size: 10,
                     align: "center",
                     font: "alagard",
