@@ -1,5 +1,5 @@
 kaboom({
-    scale:4,
+    scale:6,
     background:[0]
 });
 
@@ -83,7 +83,7 @@ scene("accueil", () => {
         }), 
         
         anchor("center"),
-        pos(center().x, center().y - 40)
+        pos(center().x, center().y - 52)
 
     ]);
     const titreOmbre1 = add([
@@ -96,7 +96,7 @@ scene("accueil", () => {
         color(0, 0, 0),
         anchor("center"),
         z(-1),
-        pos(center().x, center().y - 42)
+        pos(center().x, center().y - 54)
 
     ]);
     const titreOmbre2 = add([
@@ -109,7 +109,7 @@ scene("accueil", () => {
         color(0, 0, 0),
         anchor("center"),
         z(-1),
-        pos(center().x, center().y - 38)
+        pos(center().x, center().y - 50)
 
     ]);
     const titreOmbre3 = add([
@@ -122,7 +122,7 @@ scene("accueil", () => {
         color(0, 0, 0),
         anchor("center"),
         z(-1),
-        pos(center().x -2, center().y - 40)
+        pos(center().x -2, center().y - 52)
     ]);
     const titreOmbre4 = add([
             text("Save the Forest", {
@@ -134,15 +134,15 @@ scene("accueil", () => {
             color(0, 0, 0),
             anchor("center"),
             z(-1),
-            pos(center().x +2, center().y - 40)
+            pos(center().x +2, center().y - 50)
     
     ]);
 
 
 
     const ProtoRec = add([
-        rect(300, 80, { radius: 4 }),
-        pos(center().x, center().y - 15),
+        rect(width()/1.2, height()/2, { radius: 4 }),
+        pos(center().x, center().y - 27),
         color(255, 255, 255),
         anchor("top"),
         fixed(),
@@ -152,35 +152,37 @@ scene("accueil", () => {
 // 
     const ProtoTxtTitre = add([
         text("Prototype par Nicolas VERDES", {
-            size: 15,
+            size: 20,
             align: "center",
             font: "alagard",
             
         }), 
-        color(0, 0, 0),
+        color(255, 0, 0),
         z(3),
         anchor("center"),
-        pos(center().x, center().y + 2)
+        pos(center().x, center().y + -10)
     ]);
 
     const ProtoTxt = add([
-        text("Dans Save the Forest, vous incarnez une petite sorcière qui part à l'aventure pour défendre sa forêt d'une plante invasive. Dans sa version finale, le jeu mélangera narration et séquence d'action.", {
-            size: 10,
+        text("Vous incarnez une petite sorcière qui part à l'aventure pour défendre sa forêt d'une plante invasive. Dans sa version finale, le jeu mélangera narration et séquence d'action.", {
+            size: 16,
             align: "left",
             font: "alagard",
-            width: width() - 150,
+            width: width() - 100,
+            
             
         }), 
+        scale(1),
         color(0, 0, 0),
         z(3),
         anchor("center"),
-        pos(center().x, center().y + 35)
+        pos(center().x, center().y + height()/5.5)
     ]);
 
     //Instruction pour commencer le jeu 
     const instru = add([
         text("Appuie sur [wavy]ENTER[/wavy] pour jouer!", {
-            size: 10,
+            size: 15,
             align: "center",
             font: "alagard",
             styles: {
@@ -192,7 +194,7 @@ scene("accueil", () => {
 
         }),
         anchor("center"),
-        pos(center().x, center().y + 80)
+        pos(center().x, center().y + 92)
 
     ]);
     
@@ -432,14 +434,14 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
         if (levelId == 0) {
             const Hero1 = add([
                 sprite("Hero"),
-                pos(300, 140),
+                pos(300, 152),
                 anchor("bot"), 
                 area(), 
                 "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
             ]);
             const Hero2 = add([
                 sprite("Hero"),
-                pos(200, 140), 
+                pos(200, 152), 
                 anchor("bot"),
                 area(), 
                 "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
@@ -556,7 +558,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
         function createTextBubble1() {
             
             return add([
-              text("Time to move forward"),
+              text("C'est le moment d'aller de l'avant", {size : 30, font: "alagard"}),
               pos(center().x, center().y - 20),
               scale(0.5),
               anchor("center"),
@@ -605,7 +607,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 sprite("Hero"),
                 area(),
                 body({ isStatic: true }),
-                pos(width() / 4 * 3, 140),
+                pos(width() / 4 * 3, 152),
                 health(BOSS_HEALTH),
                 
                 scale(4),
@@ -621,7 +623,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
             const healthbar = add([
                 rect(width()/2, 7, { radius: 32 }),
-                pos(width()/4, center().y - 90),
+                pos(width()/4, center().y - 102),
                 color(229, 57, 51),
                 fixed(),
                 z(2),
@@ -635,7 +637,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             ])
             const healthbarGreyOutline = add([
                 rect(width()/2, 7,{ radius: 32 }),
-                pos(width()/4, center().y - 90),
+                pos(width()/4, center().y - 102),
                 color(200, 200, 200),
                 fixed(),
                 z(1),
@@ -646,23 +648,23 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             ])
             const BossName = add([
                 text("Ambroisie", {
-                    size: 12,
+                    size: 18,
                     align: "center",
                     font: "alagard",}
                     ),
-                pos(center().x, center().y - 70),
+                pos(center().x, center().y - 82),
                 anchor("center"),
                 fixed(),
                 z(2),
             ])
             const BossNameShadow = add([
                 text("Ambroisie", {
-                    size: 12,
+                    size: 18,
                     align: "center",
                     font: "alagard",}
                     ),
                 color(0,0,0),
-                pos(center().x, center().y - 68),
+                pos(center().x, center().y - 80 ),
                 anchor("center"),
                 fixed(),
                 z(1),
@@ -814,8 +816,8 @@ onKeyPress("escape", () => {
         0.5,
         (p) => {
             pauseMenu.pos = p;
-            txtdePause.pos = p.add(0, -60); // Update the position of the text
-            txtdePause2.pos = p.add(0, -30);
+            txtdePause.pos = p.add(0, -72); // Update the position of the text
+            txtdePause2.pos = p.add(0, -42);
         },
         easings.easeOutElastic
     );
@@ -842,18 +844,18 @@ onKeyPress("escape", () => {
 });
 
 const pauseMenu = add([
-    rect(200, 70,{ radius: 32 }),
+    rect(250, 85,{ radius: 32 }),
     color(255, 247, 209),
     outline(4, rgb( 109 , 7 , 26)),
     anchor("bot"),
     z(5),
     opacity(0.8),
-    pos(center().x, center().y - 40),
+    pos(center().x, center().y - 52),
 ]);
 
 const txtdePause = add([
     text("Pause", { 
-        size: 20,
+        size: 25,
         font: "alagard", 
         width: width() - 230, 
         align: "center" 
@@ -866,7 +868,7 @@ const txtdePause = add([
 
 const txtdePause2 = add([
     text("[black]Pour reprendre le jeu appuie sur la touche[/black][wavy] ESC[/wavy]", { 
-        size: 10,
+        size: 15,
         font: "alagard", 
         width: width() - 230, 
         align: "center",
@@ -919,19 +921,19 @@ pauseMenu.paused = true;
                 }), 
                 
                 anchor("center"),
-                pos(center().x, center().y - 40)
+                pos(center().x, center().y - 52)
         
             ]);
             const ligne = add([
                 rect(112, 1),
                 anchor("center"),
-                pos(center().x, center().y - 28) 
+                pos(center().x, center().y - 40) 
                 
             ])
 
             const DefaiteWitch = add([
                 sprite("Witch",{ anims: { idle: 0, run: [1, 2] } }),
-                pos(center().x - 20, center().y + 55) ,
+                pos(center().x - 32, center().y + 43) ,
                 anchor("center"), 
                 color(hsl2rgb(0.55, 0.9, 0.6))
             ]);
@@ -939,19 +941,19 @@ pauseMenu.paused = true;
 
             const TextDefaite = add([
                 text("Malheureusement, Ambroisie a eu raison de toi", {
-                    size: 10,
+                    size: 15,
                     align: "center",
                     font: "alagard",
                 }), 
                 
                 anchor("center"),
-                pos(center().x, center().y - 10)
+                pos(center().x, center().y - 22)
         
             ]);
             
             const instru = add([
                 text("Appuie sur [wavy]ENTER[/wavy] pour recommencer!", {
-                    size: 10,
+                    size: 15,
                     align: "center",
                     font: "alagard",
                     styles: {
@@ -963,7 +965,7 @@ pauseMenu.paused = true;
         
                 }),
                 anchor("center"),
-                pos(center().x, center().y + 80)
+                pos(center().x, center().y + 68)
         
             ]);
             // Interaction avec ENTER
@@ -995,18 +997,18 @@ pauseMenu.paused = true;
                 }), 
                 
                 anchor("center"),
-                pos(center().x, center().y - 40)
+                pos(center().x, center().y - 52)
         
             ]);
             const ligne = add([
                 rect(112, 1),
                 anchor("center"),
-                pos(center().x, center().y - 28)
+                pos(center().x, center().y - 40)
             ])
 
             const FinalWitch = add([
                 sprite("Witch",{ anims: { idle: 0, run: [1, 2] } }),
-                pos(center().x - 20, center().y + 55) ,
+                pos(center().x - 32, center().y + 43) ,
                 anchor("center")
                 
             ]);
@@ -1014,19 +1016,19 @@ pauseMenu.paused = true;
 
             const Credit = add([
                 text("Un jeu fait par Nicolas VERDES", {
-                    size: 10,
+                    size: 15,
                     align: "center",
                     font: "alagard",
                 }), 
                 
                 anchor("center"),
-                pos(center().x, center().y - 10)
+                pos(center().x, center().y - 22)
         
             ]);
             
             const instru = add([
                 text("Appuie sur [wavy]ENTER[/wavy] pour recommencer!", {
-                    size: 10,
+                    size: 15,
                     align: "center",
                     font: "alagard",
                     styles: {
@@ -1038,7 +1040,7 @@ pauseMenu.paused = true;
         
                 }),
                 anchor("center"),
-                pos(center().x, center().y + 80)
+                pos(center().x, center().y + 68)
         
             ]);
             // Interaction avec ENTER
