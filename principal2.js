@@ -2,7 +2,7 @@ kaboom({
     scale:4,
     background:[0]
 });
-//PIANO
+
 loadSpriteAtlas("Sprites/TilesetGround.png", "Sprites/TilesetGround.json");
 loadSpriteAtlas("Sprites/WitchAnims.png", "Sprites/WitchAnims.json");
 loadSpriteAtlas("Sprites/background_layer_1.png","Sprites/background_layer_1.json"); // credit
@@ -17,7 +17,7 @@ loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it.
 const JUMP_FORCE = 650
 const SPEED = 200;
 setGravity(2500);
-const FLOOR_POS = 300; // 2 is added to the height to make the player stay above the floor (CHATGPT)
+const FLOOR_POS = 300; // 2 is added to the height to make the player stay above the floor (CHATGPT) (Solution for a GLITCH THAT MAY NOT EXIST)
 
 
 
@@ -51,19 +51,19 @@ scene("accueil", () => {
     
     const spriteWidth = 320;
     
-        add([                                                                    //+ 1 ajoute une sprite en plus pour s'assurer que le background est rempli même si il devrait il y avoir un gap qui est moins que la largeur du sprite.
+        add([                                                                   
             sprite("background_layer_1"),
             pos(spriteWidth, -16),
             scale(1),
             z(-3),
         ]);
-        add([                                                                    //+ 1 ajoute une sprite en plus pour s'assurer que le background est rempli même si il devrait il y avoir un gap qui est moins que la largeur du sprite.
+        add([                                                                    
             sprite("background_layer_2"),
             pos(spriteWidth, -16),
             scale(1),
             z(-2),
         ]);
-        add([                                                                    //+ 1 ajoute une sprite en plus pour s'assurer que le background est rempli même si il devrait il y avoir un gap qui est moins que la largeur du sprite.
+        add([   
             sprite("background_layer_3"),
             pos(spriteWidth, -16),
             scale(1),
@@ -73,7 +73,7 @@ scene("accueil", () => {
         
 
 
-    // Texte d'accueil | la répétition titre est parce que Kaboom n'as pas de outline qui fonctionne avec du texte. 
+    // Texte d'accueil | la répétition des 5 titres est parce que Kaboom n'as pas de outline qui fonctionne avec du texte. 
     const titre = add([
         text("Save the Forest", {
             size: 30,
@@ -232,8 +232,8 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             tileWidth: 16,
             tileHeight: 16,
             z :0,
-            pos: vec2(0, height() - 16 * 19), // Place la GRID ou je veux, proposé par CHATGPT : 
-                                              // The 24 * 19 is the width and height of the level grid in pixels, which in this case is 24 pixels wide and 19 tiles high.
+            pos: vec2(0, height() - 16 * 19), // Grid is placed where desired, line from CHATGPT. Explanation : 
+                                              // The 16 * 19 is the width and height of the level grid in pixels, which in this case is 24 pixels wide and 19 tiles high.
             
             tiles: {
                 "=": () => [
@@ -336,7 +336,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             pos(104, 140),
             area({ shape: new Rect(vec2(-1, 2), 25, 32) }),
             body(),
-            z(1), // valeur de coordonné z pour le jeu
+            z(1),
             scale(1),
             health(PLAYER_HEALTH),
             anchor("bot"),
@@ -349,7 +349,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 
-            if (levelId == 1) { // The OR opperator is -->  (levelId == 1 || levelId == 3)
+            if (levelId == 1) { // Not useful for now, but when it will be, the OR opperator is -->  (levelId == 1 || levelId == 3)
             player.onHurt(() => {
                 PlayerHealthbar.set(player.hp())
                 shake(10)
@@ -397,21 +397,21 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 sprite("Hero"),
                 pos(300, 140),
                 anchor("bot"), 
-                area(), // Enable collision detection for the character
-                "chara" // Add a tag to identify the character
+                area(), 
+                "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
             ]);
             const Hero2 = add([
                 sprite("Hero"),
                 pos(200, 140), 
                 anchor("bot"),
-                area(), // Enable collision detection for the character
-                "chara" // Add a tag to identify the character
+                area(), 
+                "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
             ]);   
         };
          
 
         
-// --- Tentative de dialogue  ---
+// --- Tentative de dialogue (pas utilisé pour l'instant) --- 
 
         const dialogs = [
             [ "chara", "hi my butterfly" ],
@@ -438,6 +438,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             return bubble;
           }
 
+          // Attempt at text in bubble.
             //const txt = add([
             //    text("", { size: 9, width: width() - 230 }),
             //    pos(bubble.pos.x, bubble.pos.y), // Position the text relative to the bubble
@@ -450,11 +451,11 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             canMove = true;
           
 
-        player.onCollide("chara", (chara) => { //"" are there to focus the onCollide action to the "chara" tag //The parameter (chara) is there so that info is passed into the function - would not work without it.
+        player.onCollide("chara", (chara) => { // "" are there to focus the onCollide action to the "chara" tag //The parameter (chara) is there so that info is passed into the function - would not work without it.
             if (!textBubble) { //if textBubble is null - To prevent the bubble to spawn on top of an existing one. 
               console.log("Yup");
-              const characterPosX = chara.pos.x; //store the data of character posX (not sure why it didn't work without doing it this way)
-              const characterPosY = chara.pos.y; //store the data of character posY (not sure why it didn't work without doing it this way)
+              const characterPosX = chara.pos.x; //store the data of character posX 
+              const characterPosY = chara.pos.y; //store the data of character posY 
               textBubble = createTextBubble(characterPosX, characterPosY); //gift the info to the createTextBubble function
               //chara.children = [textBubble]; //old attempt at using child. Did work at one point but did not manage to change it as I wished. 
               canMove = false; //Boolean logic to stop the player on its track while a textbubble is on screen
@@ -472,7 +473,9 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
         
         
         
-        
+//          Ancien fonctionnement de la création du bubble
+
+
         //const Hero1 = add([
         //    sprite("Hero"),
         //    pos(300, 112), 
@@ -511,7 +514,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 
-// --- Pas de retour en arrière | Placeholder textbubble2 ---
+// --- Pas de retour en arrière | Placeholder textbubble2 | Avancé des niveau ou victoire---
 
         function createTextBubble1() {
             
@@ -520,9 +523,13 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
               pos(center().x, center().y - 20),
               scale(0.5),
               anchor("center"),
-              lifespan(1), // Automatically destroy the text bubble after 2 seconds (CHATGPT)
+              lifespan(1),
             ]);
           }
+
+
+
+        //Plus particulièrement utile, surtout utile lors de la construction d'un niveau. 
         function createTextBubble2() {
             
             return add([
@@ -628,12 +635,13 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 destroy(healthbarGreyOutline)
                 destroy(BossName)
                 destroy(BossNameShadow)
-            })//BUILD
+            })
         }
 
         
 
-// --- Mécaniques de combat ---        
+// --- Mécaniques de combat ---  
+//                  À ajouter --> fiole de désherbant (dégat sur forêt)     
 
         onCollide("bullet", "enemy", (bullet, enemy) => {
             destroy(bullet)
@@ -661,8 +669,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                     outline(4),
                    move(player.dir, BULLET_SPEED),
                     offscreen({ destroy: true }),
-                    // strings here means a tag
-                    "bullet",
+                    "bullet"
                 ])
             }
         }
@@ -694,11 +701,12 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
         let camPossetX = player.pos.x + width()/4
 
-        player.onUpdate(() => {
+        player.onUpdate(() => {                 // A VERIFIER SI CE GLITCH EXISTE ENCORE - Je crois bien que non depuis que la taille de la grid est devenue bien plus petite. 
             if (player.pos.y >= FLOOR_POS) {    //correction d'un glitch ou le joueur pouvais tomber bien qu'il soit sur la grid. (Traversant le niveau quoi)
                 player.pos.y = 20;
               }
-        // Set the viewport center to player.pos.x and the current camera y position
+
+        // Set la position de la camera 
         camPos(vec2(camPossetX, camPosOffsetY));      //Si j'ai envie de le retourner et d'avoir la caméra sur l'autre tiers le code est : camPos(vec2(player.pos.x - width()/4, camPosOffsetY)); 
         camScale(1.05);
         });	
@@ -756,7 +764,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 // --- Menu Pause --- 
-//                      Vient principalement du playground kaboom modifié à ma convenance
+//                      Vient principalement du playground kaboom modifié à ma convenance - Ajouter les éléments en mouvement si besoin.
 
 let curTween = null;
 let bullet = 1; // Valeur nécessaire pour ne pas que ça plante quand on pause avant d'avoir tiré une fois.
@@ -880,8 +888,7 @@ pauseMenu.paused = true;
             const ligne = add([
                 rect(112, 1),
                 anchor("center"),
-                area(),
-                pos(center().x, center().y - 28) ,
+                pos(center().x, center().y - 28) 
                 
             ])
 
@@ -889,8 +896,7 @@ pauseMenu.paused = true;
                 sprite("Witch",{ anims: { idle: 0, run: [1, 2] } }),
                 pos(center().x - 20, center().y + 55) ,
                 anchor("center"), 
-                area(), // Enable collision detection for the character
-                color(hsl2rgb(0.55, 0.9, 0.6)),
+                color(hsl2rgb(0.55, 0.9, 0.6))
             ]);
             DefaiteWitch.play("idle",{ speed: 3})
 
@@ -958,16 +964,13 @@ pauseMenu.paused = true;
             const ligne = add([
                 rect(112, 1),
                 anchor("center"),
-                area(),
-                pos(center().x, center().y - 28) ,
-                
+                pos(center().x, center().y - 28)
             ])
 
             const FinalWitch = add([
                 sprite("Witch",{ anims: { idle: 0, run: [1, 2] } }),
                 pos(center().x - 20, center().y + 55) ,
-                anchor("center"), 
-                area(), // Enable collision detection for the character
+                anchor("center")
                 
             ]);
             FinalWitch.play("idle")
