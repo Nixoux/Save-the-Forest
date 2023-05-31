@@ -1,0 +1,75 @@
+{ 
+    "terre1":{ 
+        "x": 432, 
+        "y": 120, 
+        "width": 24, 
+        "height": 24 
+        
+    },
+    "terre2":{
+        "x": 456, 
+        "y": 120, 
+        "width": 24, 
+        "height": 24 
+    }, 
+    "sol-Acoing-G":{
+        "x": 120, 
+        "y": 168, 
+        "width": 24, 
+        "height": 24 
+    },
+    "sol-Amilieu":{
+        "x": 144,
+        "y": 168, 
+        "width": 24, 
+        "height": 24 
+    }, 
+    "sol-Acoing-D":{
+        "x": 168, 
+        "y": 168, 
+        "width": 24, 
+        "height": 24 
+    }, 
+    "sol3":{
+         "x": 456, 
+         "y": 168, 
+         "width": 24, 
+         "height": 24 
+    },
+    "sol4":{
+        "x": 432, 
+        "y": 192, 
+        "width": 24, 
+        "height": 24 
+   },
+   "sol-Jcoing-G":{
+        "x": 120, 
+        "y": 216, 
+        "width": 24, 
+        "height": 24 
+    },
+    "sol-Jmilieu":{
+        "x": 144, 
+        "y": 216, 
+        "width": 24, 
+        "height": 24 
+    },
+    "sol-Jcoing-D":{
+        "x": 168, 
+        "y": 216, 
+        "width": 24, 
+        "height": 24 
+    },
+    "Barrier":{
+        "x": 194, 
+        "y": 216, 
+        "width": 16, 
+        "height": 16 
+    },
+    "UpdatedSolD":{
+        "x":24,"y":0,"width":24,"height":24
+    },
+    "UpdatedSolPlein":{
+        "x":24,"y":24,"width":24,"height":24
+    }
+}

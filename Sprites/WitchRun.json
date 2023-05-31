@@ -1,0 +1,18 @@
+{
+    "WitchRun":{
+        "x":1,
+        "y":1,
+        "width":198,
+        "height":27,
+        "sliceX": 8,
+        "anims": {
+            "run": {
+              "from": 0,
+              "to": 7,
+              "speed": 8,
+              "loop": true
+              
+            }
+          }
+    }
+}

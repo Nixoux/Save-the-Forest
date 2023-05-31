@@ -1,0 +1,19 @@
+{
+    "Hero":{
+        "x":0,
+        "y":28,
+        "width":33,
+        "height":28,
+        "sliceX": 2,
+        "anims": {
+            "idle": {
+              "from": 0,
+              "to": 1,
+              "speed": 4,
+              "loop": true
+              
+            }
+          }
+      
+    }
+}
