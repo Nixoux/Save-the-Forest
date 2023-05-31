@@ -628,7 +628,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 destroy(healthbarGreyOutline)
                 destroy(BossName)
                 destroy(BossNameShadow)
-            })
+            })//BUILD
         }
 
         
