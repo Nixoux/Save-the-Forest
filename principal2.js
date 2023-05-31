@@ -2,7 +2,7 @@ kaboom({
     scale:4,
     background:[0]
 });
-
+//PIANO
 loadSpriteAtlas("Sprites/TilesetGround.png", "Sprites/TilesetGround.json");
 loadSpriteAtlas("Sprites/WitchAnims.png", "Sprites/WitchAnims.json");
 loadSpriteAtlas("Sprites/background_layer_1.png","Sprites/background_layer_1.json"); // credit
