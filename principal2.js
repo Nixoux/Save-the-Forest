@@ -2,6 +2,7 @@ kaboom({
     scale:4,
     background:[0]
 });
+// test
 
 loadSpriteAtlas("Sprites/TilesetGround.png", "Sprites/TilesetGround.json");
 loadSpriteAtlas("Sprites/WitchAnims.png", "Sprites/WitchAnims.json");
