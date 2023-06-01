@@ -156,7 +156,7 @@ scene("accueil", () => {
         text("Prototype par Nicolas VERDES", {
             size: 20,
             align: "center",
-            font: "alagard",
+            font: "Arial",
             
         }), 
         color(255, 0, 0),
@@ -168,9 +168,9 @@ scene("accueil", () => {
     const ProtoTxt = add([
         text("Vous incarnez une petite sorcière qui part à l'aventure pour défendre sa forêt d'une plante invasive. Dans sa version finale, le jeu mélangera narration et séquence d'action.", {
             size: 15,
-            align: "left",
-            font: "alagard",
-            width: width()/4*3,
+            align: "center",
+            font: "Arial",
+            width: 350,
             
             
         }), 
@@ -819,8 +819,8 @@ onKeyPress("escape", () => {
         0.5,
         (p) => {
             pauseMenu.pos = p;
-            txtdePause.pos = p.add(0, -60); // Update the position of the text
-            txtdePause2.pos = p.add(0, -30);
+            txtdePause.pos = p.add(0, -70); // Update the position of the text
+            txtdePause2.pos = p.add(0, -40);
         },
         easings.easeOutElastic
     );
@@ -847,7 +847,7 @@ onKeyPress("escape", () => {
 });
 
 const pauseMenu = add([
-    rect(250, 70,{ radius: 32 }),
+    rect(260, 80,{ radius: 32 }),
     color(255, 247, 209),
     outline(4, rgb( 109 , 7 , 26)),
     anchor("bot"),
@@ -858,7 +858,7 @@ const pauseMenu = add([
 
 const txtdePause = add([
     text("Pause", { 
-        size: 20,
+        size: 25,
         font: "alagard", 
         width: width() - 230, 
         align: "center" 
@@ -871,9 +871,9 @@ const txtdePause = add([
 
 const txtdePause2 = add([
     text("[black]Pour reprendre le jeu appuie sur la touche[/black][wavy] ESC[/wavy]", { 
-        size: 10,
+        size: 15,
         font: "alagard", 
-        width: width() - 230, 
+        width: 300, 
         align: "center",
         styles: {
             "black": (idx, ch) => ({
