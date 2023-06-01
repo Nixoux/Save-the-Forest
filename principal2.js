@@ -1,6 +1,8 @@
 kaboom({
-    scale:6,
-    background:[0]
+    scale:3.5,
+    background:[0,0,0],
+    width: 448,
+    height: 210,
 });
 
 loadSpriteAtlas("Sprites/TilesetGround.png", "Sprites/TilesetGround.json");
@@ -165,10 +167,10 @@ scene("accueil", () => {
 
     const ProtoTxt = add([
         text("Vous incarnez une petite sorcière qui part à l'aventure pour défendre sa forêt d'une plante invasive. Dans sa version finale, le jeu mélangera narration et séquence d'action.", {
-            size: 16,
+            size: 15,
             align: "left",
             font: "alagard",
-            width: width() - 100,
+            width: width()/4*3,
             
             
         }), 
@@ -193,8 +195,9 @@ scene("accueil", () => {
             }
 
         }),
+        z(4),
         anchor("center"),
-        pos(center().x, center().y + 92)
+        pos(center().x, height()-15)
 
     ]);
     
@@ -372,7 +375,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
         const PLAYER_HEALTH = 60;
         const player = add([
             sprite("Witch",{ anims: { idle: 0, run: [1, 2] } }),
-            pos(104, 140),
+            pos(width()/4, height()-64),
             area({ shape: new Rect(vec2(-1, 2), 25, 32) }),
             body(),
             z(1),
@@ -434,14 +437,14 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
         if (levelId == 0) {
             const Hero1 = add([
                 sprite("Hero"),
-                pos(300, 152),
+                pos(300, height()-64),
                 anchor("bot"), 
                 area(), 
                 "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
             ]);
             const Hero2 = add([
                 sprite("Hero"),
-                pos(200, 152), 
+                pos(200, height()-64), 
                 anchor("bot"),
                 area(), 
                 "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
@@ -607,7 +610,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 sprite("Hero"),
                 area(),
                 body({ isStatic: true }),
-                pos(width() / 4 * 3, 152),
+                pos(width() / 4 * 3, height()-64),
                 health(BOSS_HEALTH),
                 
                 scale(4),
@@ -623,7 +626,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
             const healthbar = add([
                 rect(width()/2, 7, { radius: 32 }),
-                pos(width()/4, center().y - 102),
+                pos(width()/4, center().y - 90),
                 color(229, 57, 51),
                 fixed(),
                 z(2),
@@ -637,7 +640,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             ])
             const healthbarGreyOutline = add([
                 rect(width()/2, 7,{ radius: 32 }),
-                pos(width()/4, center().y - 102),
+                pos(width()/4, center().y - 90),
                 color(200, 200, 200),
                 fixed(),
                 z(1),
@@ -652,7 +655,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                     align: "center",
                     font: "alagard",}
                     ),
-                pos(center().x, center().y - 82),
+                pos(center().x, center().y - 70),
                 anchor("center"),
                 fixed(),
                 z(2),
@@ -664,7 +667,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                     font: "alagard",}
                     ),
                 color(0,0,0),
-                pos(center().x, center().y - 80 ),
+                pos(center().x, center().y - 68 ),
                 anchor("center"),
                 fixed(),
                 z(1),
@@ -816,8 +819,8 @@ onKeyPress("escape", () => {
         0.5,
         (p) => {
             pauseMenu.pos = p;
-            txtdePause.pos = p.add(0, -72); // Update the position of the text
-            txtdePause2.pos = p.add(0, -42);
+            txtdePause.pos = p.add(0, -60); // Update the position of the text
+            txtdePause2.pos = p.add(0, -30);
         },
         easings.easeOutElastic
     );
@@ -844,18 +847,18 @@ onKeyPress("escape", () => {
 });
 
 const pauseMenu = add([
-    rect(250, 85,{ radius: 32 }),
+    rect(250, 70,{ radius: 32 }),
     color(255, 247, 209),
     outline(4, rgb( 109 , 7 , 26)),
     anchor("bot"),
     z(5),
     opacity(0.8),
-    pos(center().x, center().y - 52),
+    pos(center().x, center().y),
 ]);
 
 const txtdePause = add([
     text("Pause", { 
-        size: 25,
+        size: 20,
         font: "alagard", 
         width: width() - 230, 
         align: "center" 
@@ -868,7 +871,7 @@ const txtdePause = add([
 
 const txtdePause2 = add([
     text("[black]Pour reprendre le jeu appuie sur la touche[/black][wavy] ESC[/wavy]", { 
-        size: 15,
+        size: 10,
         font: "alagard", 
         width: width() - 230, 
         align: "center",
