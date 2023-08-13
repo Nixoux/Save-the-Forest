@@ -7,6 +7,7 @@ kaboom({
 
 loadSpriteAtlas("Sprites/TilesetGround.png", "Sprites/TilesetGround.json");
 loadSpriteAtlas("Sprites/WitchAnims.png", "Sprites/WitchAnims.json");
+loadSpriteAtlas("Sprites/AmbroisieIdle.png", "Sprites/AmbroisieIdle.json");
 loadSpriteAtlas("Sprites/background_layer_1.png","Sprites/background_layer_1.json"); // credit
 loadSpriteAtlas("Sprites/background_layer_2.png","Sprites/background_layer_2.json"); // credit
 loadSpriteAtlas("Sprites/background_layer_3.png","Sprites/background_layer_3.json"); // credit
@@ -604,21 +605,23 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 // --- Boss ---
 
         const BOSS_HEALTH = 200
-        
+        let boss;
         if (levelId == 1) {
-            const boss = add([
-                sprite("Hero"),
+            boss = add([
+                sprite("AmbroisieIdle",{ anims: { idle: 0} }),
                 area(),
                 body({ isStatic: true }),
-                pos(width() / 4 * 3, height()-64),
+                pos(width() / 4 * 3, height()-63),
                 health(BOSS_HEALTH),
                 
-                scale(4),
+                scale(1.5),
                 anchor("bot"),
-                "enemy",
+                "enemy","boss"
+                
                 
             ])
-            boss.flipX = true;
+            boss.play("idle")
+            
             
             boss.onHurt(() => {
                 healthbar.set(boss.hp())
@@ -833,6 +836,9 @@ onKeyPress("escape", () => {
         player.paused = true;
         bullet.paused = true;
         canMove = false;
+        if (levelId == 1) {
+            boss.paused = true;
+        }
     } else {
         curTween.onEnd(() => {
             pauseMenu.hidden = true;
@@ -842,6 +848,9 @@ onKeyPress("escape", () => {
             player.paused = false;
             bullet.paused = false;
             canMove = true;
+            if (levelId == 1) {
+                boss.paused = false;
+            }
         });
     }
 });
