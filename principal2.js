@@ -688,36 +688,21 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             //The logic here is to create the object offscreen and move it every three seconds. 
             //This logic comes from discussing the best way to approach this attack pattern with CHATGPT. 
             //Doing this this way, there is no need to constantly create and destroy objects. Thus, allowing for a better management of the allocated ram. Improving performance. 
-
-            flowerPillar = add([
-                rect(10, 50),
-                pos( vec2(-100, -100)),
-                area(),
-                anchor("bot"),
-                color(127, 127, 255),
-                outline(4),
-                "flowerPillar"
-            ]);
-
-            flowerPillar2 = add([
-                rect(10, 50),
-                pos( vec2(-100, -100)),
-                area(),
-                anchor("bot"),
-                color(127, 127, 255),
-                outline(4),
-                "flowerPillar"
-            ]);
-
-            flowerPillar3 = add([
-                rect(10, 50),
-                pos( vec2(-100, -100)),
-                area(),
-                anchor("bot"),
-                color(127, 127, 255),
-                outline(4),
-                "flowerPillar"
-            ]);
+            function createFlowerPillar() {
+                return add([
+                    rect(10, 50),
+                    pos(vec2(-100, -100)),
+                    area(),
+                    anchor("bot"),
+                    color(127, 127, 255),
+                    outline(4),
+                    "flowerPillar",
+                ]);
+            }
+            flowerPillar = createFlowerPillar();
+            flowerPillar2 = createFlowerPillar();
+            flowerPillar3 = createFlowerPillar();
+            
             
             
             // Loop to toggle object's position every 3 seconds
@@ -959,9 +944,12 @@ onKeyPress("escape", () => {
         pauseMenu.paused = false;
         player.paused = true;
         bullet.paused = true;
+
         canMove = false;
         if (levelId == 1) {
+            
             boss.paused = true;
+
         }
     } else {
         curTween.onEnd(() => {
@@ -971,9 +959,12 @@ onKeyPress("escape", () => {
             pauseMenu.paused = true;
             player.paused = false;
             bullet.paused = false;
+
             canMove = true;
             if (levelId == 1) {
+                
                 boss.paused = false;
+
             }
         });
     }
