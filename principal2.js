@@ -17,7 +17,7 @@ loadSpriteAtlas("Sprites/Hero.png", "Sprites/Hero.json");
 
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
 
-const JUMP_FORCE = 650
+const JUMP_FORCE = 600
 const SPEED = 200;
 setGravity(2500);
 const FLOOR_POS = 300; // 2 is added to the height to make the player stay above the floor (CHATGPT) (Solution for a GLITCH THAT MAY NOT EXIST)
@@ -258,8 +258,8 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             "  X                         ",
             "  X                       C ",
             "  X                       C ",
-            "  X   ===                 C ",
             "  X                       C ",
+            "  X   ===                 C ",
             "  X                       C ",
             "  X                       C ",
             "XXX                       C ",
@@ -430,7 +430,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                         },
                     },
                 ])
-             
+
             }
 
 // --- PNJs | Niveau 0 ---      
@@ -604,8 +604,14 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 // --- Boss ---
 
-        const BOSS_HEALTH = 200
+        let BOSS_HEALTH = 200
+        let isBossAlive = true;
         let boss;
+        let flowerPillar;
+        let flowerPillar2;
+        let flowerPillar3;
+        let flowerPillarLoop;
+        let PollenCannonBallLoop;
         if (levelId == 1) {
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
@@ -675,12 +681,123 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 fixed(),
                 z(1),
             ])
+
+
+
+            // BOSS ATTACK : The Flower Pillar
+            //The logic here is to create the object offscreen and move it every three seconds. 
+            //This logic comes from discussing the best way to approach this attack pattern with CHATGPT. 
+            //Doing this this way, there is no need to constantly create and destroy objects. Thus, allowing for a better management of the allocated ram. Improving performance. 
+
+            flowerPillar = add([
+                rect(10, 50),
+                pos( vec2(-100, -100)),
+                area(),
+                anchor("bot"),
+                color(127, 127, 255),
+                outline(4),
+                "flowerPillar"
+            ]);
+
+            flowerPillar2 = add([
+                rect(10, 50),
+                pos( vec2(-100, -100)),
+                area(),
+                anchor("bot"),
+                color(127, 127, 255),
+                outline(4),
+                "flowerPillar"
+            ]);
+
+            flowerPillar3 = add([
+                rect(10, 50),
+                pos( vec2(-100, -100)),
+                area(),
+                anchor("bot"),
+                color(127, 127, 255),
+                outline(4),
+                "flowerPillar"
+            ]);
+            
+            
+            // Loop to toggle object's position every 3 seconds
+            wait(5, () => {             //The wait is done so the attack doesn't just start frame1.
+                if (isBossAlive) {  //necessary so that it doesn't start if the boss is already dead.The boolean logic is necessary, the code didn't seem to catch BOSS_HEALTH > 0 
+                    flowerPillarLoop = loop(3, toggleFlowerPillarPosition); // appears every 3 seconds, dissapears every 3 seconds. 
+                }
+            });
+
+            // Function to toggle object's position
+            function toggleFlowerPillarPosition() {
+
+                if (flowerPillar.pos.x < 0) {
+                    flowerPillar.pos = vec2(width()/ 3, height()-63);  // Back to visible area
+                    flowerPillar2.pos = vec2(width()/ 2, height()-63);
+                    flowerPillar3.pos = vec2(width()/ 6, height()-63);
+                } else {
+                    flowerPillar.pos = vec2(-100, -100);  // Out of playable area
+                    flowerPillar2.pos = vec2(-100, -100);
+                    flowerPillar3.pos = vec2(-100, -100);
+                }
+            }
+            
+            // Tried using the tween function but got weirdly interesting and frustrating results due to the duration needed.    
+            // ended up getting help from ChatGPT for this one. 
+            // Asked the code for a circle to travel from a defined point A to the players location.
+            
+            function launchPollenCannonBall() {
+                const pointA = vec2(width() / 4 * 3, height() / 2); //Starting point for the launch
+                const pointB = player.pos.clone();
+            
+                const direction = pointB.sub(pointA).unit();  // Calculate direction vector and normalize it || ChatGPT used lerp before, asked it to change and calculate a vector. This way, the ball is aimed at the player and if it misses, it doesn't just disappear. 
+                const circleSpeed = 300;  
+            
+                const pollenCannonBall = add([
+                    circle(10),
+                    pos(pointA),
+                    color(1, 0, 0),
+                    anchor("bot"),
+                    area(),
+                    offscreen({ destroy: true }),
+                    "pollenCannonBall",
+                    {
+                        update() {
+                            pollenCannonBall.move(direction.scale(circleSpeed ));  // Moves the circle in the direction
+                            
+                            if (pollenCannonBall.pos.y >= height() - 63) { //destroys the ball if it touches the ground. 
+                                destroy(pollenCannonBall);
+                            }
+                        }
+                    }
+                ]);
+            }
+
+            wait(3.5, () => {  
+                if (isBossAlive) {
+                    PollenCannonBallLoop = loop(3, launchPollenCannonBall);
+                }
+            });
+
+
+            //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
+                isBossAlive = false
                 destroy(enemy)
                 destroy(healthbarGreyOutline)
                 destroy(BossName)
                 destroy(BossNameShadow)
+
+                flowerPillar.pos = vec2(-100, -100); //necessary to make it dissapear instantly, otherwise the timing may be that the flowerPillar stays 3 seconds after the death of boss.
+                flowerPillar2.pos = vec2(-100, -100);
+                flowerPillar3.pos = vec2(-100, -100);
+                if (flowerPillarLoop) {  // Check if flowerPillarLoop is defined - otherwise the game may crash if the boss dies before the 5 second wait.
+                    flowerPillarLoop.cancel();   
+                } 
+                if (PollenCannonBallLoop) {  // Check if flowerPillarLoop is defined - otherwise the game may crash if the boss dies before the 5 second wait.
+                    PollenCannonBallLoop.cancel();   
+                } 
             })
+
         }
 
         
@@ -698,6 +815,13 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
         });
 
+        player.onCollide("flowerPillar", () => {
+            player.hurt(20);
+        });
+
+        player.onCollide("pollenCannonBall", () => {
+            player.hurt(20);
+        });
         on("death", "player", (player) => {
             go("Defaite")
         })
