@@ -510,16 +510,152 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 // --- PNJs | Niveau 0 ---      
 
         if (levelId == 0) {
-            const Hero1 = add([
+            
+            const hoodedFigure = add([
                 sprite("Hero"),
-                pos(300, height()-64),
+                pos(200, height()-64),
                 anchor("bot"), 
                 area(), 
-                "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
+                "hoodedFigure"
             ]);
+            hoodedFigure.flipX = true,
+
+            (200, height()-64)
+
+
+            let exclamationPoint = add([
+                rect(10,5),  // for example, a 20x20 square
+                pos(-100, -100),  // initially off-screen
+                color(255, 255, 255),  // blue color
+                anchor("bot"),
+                area(),
+                outline(1),
+                "warningBLUE"
+            ]);
+            let exclamationPoint2 = add([
+                rect(10, 20),  
+                pos(-100, -100),  
+                color(255, 255, 255), 
+                anchor("bot"),
+                area(),
+                outline(1),
+                "warningBLUE"
+            ]);
+            
+            function toggleExclamationPoint() {
+                if (exclamationPoint.pos.x < 0) {
+                    exclamationPoint.pos = vec2(200, height()/2);
+                    exclamationPoint2.pos = vec2(200, height()/2-8);
+                } else {
+                    exclamationPoint.pos = vec2(-100, -100);
+                    exclamationPoint2.pos = vec2(-100, -100);
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Define the dialogue data
+const dialogs = [
+    "Sorcière, la forêt murmure d'un danger...",
+    "...une plante envahissante nommée Ambroisie...",
+    "Elle ne devrait pas se trouver ici.",
+    "Les plantes envahissantes comme Ambroisie nuisent à la forêt...",
+    " étouffant la vie de nos espèces natives."
+];
+
+let curDialog = 0;
+
+// Speech Bubble
+let speechBubble = add([
+    rect(250, 50, { radius: 8 }),  // Adjust the size as needed
+    pos(-100, -100),
+    anchor("center"),
+    color(0, 0, 0),
+    opacity(0.8),
+    area(),
+    outline(1),
+    "speechBubble"
+]);
+
+// Text inside the Speech Bubble
+const speechText = add([
+    text(dialogs[curDialog], { size: 40, width: 800, align: "center",font: "alagard", }),
+    pos(speechBubble.pos.x, speechBubble.pos.y),
+    anchor("center"),
+    color(255, 255, 255),
+    scale(0.3)
+]);
+
+function toggleSpeechBubble() {
+    if (speechBubble.pos.x < 0) {
+        speechBubble.pos = vec2(200, height()/2-40);
+        speechText.pos = vec2(200, height()/2-40);  // Align text with bubble
+    } else {
+        speechBubble.pos = vec2(-100, -100);
+        speechText.pos = vec2(-100, -100);  // Hide text with bubble
+    }
+}
+
+onKeyPress("space", () => {
+    curDialog = (curDialog + 1) % dialogs.length;
+    speechText.text = dialogs[curDialog];
+});
+
+wait(1, () => {
+    toggleExclamationPoint();
+    wait(1, () => {
+        toggleExclamationPoint();
+        wait(0.5, () => {
+            canMove = false;
+            toggleSpeechBubble();
+        });
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //const Hero1 = add([
+            //    sprite("Hero"),
+            //    pos(300, height()-64),
+            //    anchor("bot"), 
+            //    area(), 
+            //    "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
+            //]);
             const Hero2 = add([
                 sprite("Hero"),
-                pos(200, height()-64), 
+                pos(300, height()-64), 
                 anchor("bot"),
                 area(), 
                 "chara" // Ajout d'un tag commun pour que la fonction createTextBubble fonctionne sur tout ceux qui le partage
@@ -753,7 +889,7 @@ let spawner;
                 area(),
                 anchor("bot"),
                 color(127, 127, 255),
-                outline(2),
+                outline(1),
                 "flowerPillar",
             ]);
  
@@ -821,7 +957,7 @@ let spawner;
             color(127, 127, 255),  // blue color
             anchor("bot"),
             area(),
-            outline(2),
+            outline(1),
             "warningBLUE"
         ]);
         let warningBLUE2 = add([
@@ -830,7 +966,7 @@ let spawner;
             color(127, 127, 255), 
             anchor("bot"),
             area(),
-            outline(2),
+            outline(1),
             "warningBLUE"
         ]);
         
@@ -854,7 +990,7 @@ let spawner;
             color(255, 127, 127),  
             anchor("bot"),
             area(),
-            outline(2),
+            outline(1),
             "warningBLUE"
         ]);
         let warningRED2 = add([
@@ -863,7 +999,7 @@ let spawner;
             color(255, 127, 127),  
             anchor("bot"),
             area(),
-            outline(2),
+            outline(1),
             "warningBLUE"
         ]);
         
@@ -999,7 +1135,7 @@ let spawner;
                 area(),
                 anchor("botright"),
                 color(127, 127, 255),
-                outline(4),
+                outline(1),
                 "leafSlap",
                 
             ]);
@@ -1278,7 +1414,7 @@ let spawner;
                 area(),
                 anchor("botright"),
                 color(255, 127, 127),
-                outline(4),
+                outline(1),
                 "leafSlap",
             ]);
 
@@ -1587,7 +1723,7 @@ let spawner;
                 area(),
                 anchor("botright"),
                 color(255, 127, 127),
-                outline(4),
+                outline(1),
                 "leafSlap",
             ]);
 
@@ -2004,7 +2140,7 @@ let spawner;
         });
 
         player.onCollide("leafSlap", () => {
-            player.hurt(40);
+            player.hurt(80);
         });
 
         on("death", "player", (player) => {
