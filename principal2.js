@@ -281,7 +281,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             "  X                       C ",
             "  X                       C ",
             "  X                       C ",
-            "  X   ===                 C ",
+            "  X                       C ",
             "  X                       C ",
             "  X                       C ",
             "XXX                       C ",
@@ -664,22 +664,28 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 //Adapted the code from the kabooms playground on particles
 //--------------------------------
 
+
+
+let shouldSpawnParticles = true;
+let spawner;
         function spawnParticlesAt(duration = 1) {
             const particleColor = rgb(255, 198, 98); // Set the particle color to rgb(255,198,98)
         
             // Start the particle spawning loop
-            const spawner = loop(0.1, () => {
+            spawner = loop(0.1, () => {
+                if (!shouldSpawnParticles) return;
                 const item = add([
-                    pos(width() / 4 * 3, height()-63),
+                    pos(width() / 4*2.7, height()-63),
                     rect(8, 8), // Create a square of size 8x8 (change as needed)
                     color(particleColor),
                     anchor("center"),
                     scale(rand(0.5, 1)),
-                    area({ collisionIgnore: ["particle"] }),
+                    area({ collisionIgnore: ["particle","enemy"] }),
                     body(),
+                    z(10),
                     lifespan(1, { fade: 0.5 }),
                     opacity(1),
-                    move(choose([LEFT, RIGHT]), rand(60, 240)),
+                    move(LEFT, rand(60, 240)),
                     "particle",
                 ])
         
@@ -834,6 +840,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
         let flowerPillar;
         let flowerPillar2;
         let flowerPillar3;
+        let isBossInvulnerable;
         //let flowerPillarLoop;
         //let PollenCannonBallLoop;
         //let leafSlapLoop;
@@ -996,7 +1003,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                     launchPollenCannonBall();
                                     wait(1, () => {
                                         if (!isBossAlive) return;
-            
+                                        isBossInvulnerable = true;
                                         // Blink Warning 4 times
                                         toggleWarningBLUE();
                                         wait(0.5, () => {
@@ -1010,7 +1017,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                     toggleWarningBLUE();
                                                     wait(0.5, () => {
                                                         if (!isBossAlive) return;
-            
+                                                        isBossInvulnerable = false;
                                                         // Launch FlowerPillar once
                                                         toggleFlowerPillarPosition();
                                                         wait(1, () => {
@@ -1031,7 +1038,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                                         launchPollenCannonBall();
                                                                         wait(1, () => {
                                                                             if (!isBossAlive) return;
-            
+                                                                            isBossInvulnerable = true;
                                                                             // Blink Warning 4 times
                                                                             toggleWarningBLUE();
                                                                             wait(0.5, () => {
@@ -1045,7 +1052,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                                                         toggleWarningBLUE();
                                                                                         wait(0.5, () => {
                                                                                             if (!isBossAlive) return;
-                                                                                            
+                                                                                            isBossInvulnerable = false;
                                                                                             // Launch FlowerPillar again
                                                                                             toggleFlowerPillarPosition();
                                                                                             wait(1, () => {
@@ -1107,9 +1114,242 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 
+        if (levelId == 2 ) {
+            boss = add([
+                sprite("AmbroisieIdle",{ anims: { idle: 0} }),
+                area(),
+                body({ isStatic: true }),
+                pos(width() / 4 * 3, height()-63),
+                health(BOSS_HEALTH),
+                z(1),
+                scale(1.5),
+                anchor("bot"),
+                "enemy","boss"
+                
+                
+            ])
+            boss.play("idle")
+            
+            
+            boss.onHurt(() => {
+                healthbar.set(boss.hp())
+            })
+
+            const healthbar = add([
+                rect(width()/2, 7, { radius: 32 }),
+                pos(width()/4, center().y - 90),
+                color(229, 57, 51),
+                fixed(),
+                z(2),
+                outline(2),
+                {
+                    max: BOSS_HEALTH,
+                    set(hp) {
+                        this.width = width()/2 * hp / this.max
+                    },
+                },
+            ])
+            const healthbarGreyOutline = add([
+                rect(width()/2, 7,{ radius: 32 }),
+                pos(width()/4, center().y - 90),
+                color(200, 200, 200),
+                fixed(),
+                z(1),
+                outline(2),
+                {
+                    max: BOSS_HEALTH,
+                }
+            ])
+            const BossName = add([
+                text("Ambroisie", {
+                    size: 18,
+                    align: "center",
+                    font: "alagard",}
+                    ),
+                pos(center().x, center().y - 70),
+                anchor("center"),
+                fixed(),
+                z(2),
+            ])
+            const BossNameShadow = add([
+                text("Ambroisie", {
+                    size: 18,
+                    align: "center",
+                    font: "alagard",}
+                    ),
+                color(0,0,0),
+                pos(center().x, center().y - 68 ),
+                anchor("center"),
+                fixed(),
+                z(1),
+            ])
 
 
 
+            // BOSS ATTACK : The Flower Pillar
+            //The logic here is to create the object offscreen and move it every three seconds. 
+            //This logic comes from discussing the best way to approach this attack pattern with CHATGPT. 
+            //Doing this this way, there is no need to constantly create and destroy objects. Thus, allowing for a better management of the allocated ram. Improving performance. 
+
+            flowerPillar = createFlowerPillar();
+            flowerPillar2 = createFlowerPillar();
+            flowerPillar3 = createFlowerPillar();
+            
+
+
+            // BOSS ATTACK : The Leaf Slap
+            //The logic is exactly the same as the Flower Pillars
+
+            let leafSlap = add([
+                rect(width()/1.5, 50),
+                pos(vec2(-100, -100)),
+                area(),
+                anchor("botright"),
+                color(255, 127, 127),
+                outline(4),
+                "leafSlap",
+            ]);
+
+            function toggleLeafSlapPosition() {
+
+                if (leafSlap.pos.x < 0) {
+                    leafSlap.pos = vec2(width() / 4 * 3, height()-63);  
+
+                } else {
+                    leafSlap.pos = vec2(-100, -100);  
+
+                }
+            }
+
+
+
+
+
+            function bossAttackPattern() {
+                if (!isBossAlive) return;
+            
+            
+                spawnParticlesAt();
+                spawnParticlesAt();
+                wait(1, () => {
+                    if (!isBossAlive) return;
+                    launchPollenCannonBall();
+                    wait(1, () => {
+                        if (!isBossAlive) return;
+                        
+                        launchPollenCannonBall();
+                        wait(1, () => {
+                            if (!isBossAlive) return;
+                            
+                            launchPollenCannonBall();
+                            wait(1, () => {
+                                if (!isBossAlive) return;
+                                
+                                launchPollenCannonBall();
+                                wait(1, () => {
+                                    if (!isBossAlive) return;
+            
+                                    launchPollenCannonBall();
+                                    wait(1, () => {
+                                        if (!isBossAlive) return;
+                                        isBossInvulnerable = true;
+                                        // Blink Warning 4 times
+                                        toggleWarningBLUE();
+                                        wait(0.5, () => {
+                                            if (!isBossAlive) return;
+                                            toggleWarningBLUE();
+                                            wait(0.5, () => {
+                                                if (!isBossAlive) return;
+                                                toggleWarningBLUE();
+                                                wait(0.5, () => {
+                                                    if (!isBossAlive) return;
+                                                    toggleWarningBLUE();
+                                                    wait(0.5, () => {
+                                                        if (!isBossAlive) return;
+                                                        isBossInvulnerable = false;
+                                                        // Launch FlowerPillar once
+                                                        toggleFlowerPillarPosition();
+                                                        wait(1, () => {
+                                                            if (!isBossAlive) return;
+                                                            toggleFlowerPillarPosition();
+                                                            
+                                                            // Launch PollenCannonBall 4 more times
+                                                            launchPollenCannonBall();
+                                                            wait(1, () => {
+                                                                if (!isBossAlive) return;
+                                                                launchPollenCannonBall();
+                                                                wait(1, () => {
+                                                                    if (!isBossAlive) return;
+            
+                                                                    launchPollenCannonBall();
+                                                                    wait(1, () => {
+                                                                        if (!isBossAlive) return;
+                                                                        launchPollenCannonBall();
+                                                                        wait(1, () => {
+                                                                            if (!isBossAlive) return;
+                                                                            isBossInvulnerable = true;
+                                                                            // Blink Warning 4 times
+                                                                            toggleWarningBLUE();
+                                                                            wait(0.5, () => {
+                                                                                if (!isBossAlive) return;
+                                                                                toggleWarningBLUE();
+                                                                                wait(0.5, () => {
+                                                                                    if (!isBossAlive) return;
+                                                                                    toggleWarningBLUE();
+                                                                                    wait(0.5, () => {
+                                                                                        if (!isBossAlive) return;
+                                                                                        toggleWarningBLUE();
+                                                                                        wait(0.5, () => {
+                                                                                            if (!isBossAlive) return;
+                                                                                            isBossInvulnerable = false;
+                                                                                            // Launch FlowerPillar again
+                                                                                            toggleFlowerPillarPosition();
+                                                                                            wait(1, () => {
+                                                                                                if (!isBossAlive) return;
+                                                                                                toggleFlowerPillarPosition();
+                                                                                                // Repeat the entire pattern
+                                                                                                bossAttackPattern();
+                                                                                            });
+                                                                                        });
+                                                                                    });
+                                                                                });
+                                                                            });
+                                                                        });
+                                                                    });
+                                                                });
+                                                            });
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            }
+
+            wait(2, bossAttackPattern);
+            
+            
+            //All the things happening when Ambroisia dies. 
+            on("death", "enemy", (enemy) => {
+                isBossAlive = false
+                destroy(enemy)
+                destroy(healthbarGreyOutline)
+                destroy(BossName)
+                destroy(BossNameShadow)
+
+                flowerPillar.pos = vec2(-100, -100); //necessary to make it dissapear instantly, otherwise the timing may be that the flowerPillar stays 3 seconds after the death of boss.
+                flowerPillar2.pos = vec2(-100, -100);
+                flowerPillar3.pos = vec2(-100, -100);
+                leafSlap.pos = vec2(-100, -100);
+                shouldSpawnParticles = false;
+            })
+
+        }
 
 
         //----------------LEVEL 3----------------------
@@ -1253,7 +1493,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                     launchPollenCannonBall();
                                     wait(1, () => {
                                         if (!isBossAlive) return;
-            
+                                        isBossInvulnerable = true;
                                         // Blink WarningBLUE 4 times
                                         toggleWarningBLUE();
                                         wait(0.5, () => {
@@ -1267,7 +1507,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                     toggleWarningBLUE();
                                                     wait(0.5, () => {
                                                         if (!isBossAlive) return;
-            
+                                                        isBossInvulnerable = false;
                                                         // Launch FlowerPillar once
                                                         toggleFlowerPillarPosition();
                                                         wait(1, () => {
@@ -1277,7 +1517,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                             toggleFlowerPillarPosition();
                                                             wait(0.5, () => {
                                                                 if (!isBossAlive) return;
-            
+                                                                isBossInvulnerable = true;
                                                                 // Blink WarningRED 4 times
                                                                 toggleWarningRED();
                                                                 wait(0.5, () => {
@@ -1291,7 +1531,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                                             toggleWarningRED();
                                                                             wait(0.5, () => {
                                                                                 if (!isBossAlive) return;
-            
+                                                                                isBossInvulnerable = false;
                                                                                 // Launch LeafSlapPosition once
                                                                                 toggleLeafSlapPosition();
                                                                                 wait(1.5, () => {
@@ -1332,7 +1572,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                     launchPollenCannonBall();
                     wait(1, () => {
                         if (!isBossAlive) return;
-            
+                        isBossInvulnerable = true;
                         // Blink WarningBLUE 4 times
                         toggleWarningBLUE();
                         wait(0.5, () => {
@@ -1346,7 +1586,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                     toggleWarningBLUE();
                                     wait(0.5, () => {
                                         if (!isBossAlive) return;
-            
+                                        isBossInvulnerable = false;
                                         // Launch FlowerPillar once
                                         toggleFlowerPillarPosition();
                                         wait(1, () => {
@@ -1356,7 +1596,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                             toggleFlowerPillarPosition();
                                             wait(2, () => {
                                                 if (!isBossAlive) return;
-            
+                                                isBossInvulnerable = true;
                                                 // Blink WarningRED 4 times
                                                 toggleWarningRED();
                                                 wait(0.5, () => {
@@ -1370,7 +1610,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                             toggleWarningRED();
                                                             wait(0.5, () => {
                                                                 if (!isBossAlive) return;
-            
+                                                                isBossInvulnerable = false;
                                                                 // Launch LeafSlapPosition once
                                                                 toggleLeafSlapPosition();
                                                                 wait(1, () => {
@@ -1425,7 +1665,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                             launchPollenCannonBall();
                                             wait(1, () => {
                                                 if (!isBossAlive) return;
-            
+                                                isBossInvulnerable = true;
                                                 // Blink WarningBLUE 4 times
                                                 toggleWarningBLUE();
                                                 wait(0.5, () => {
@@ -1439,7 +1679,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                             toggleWarningBLUE();
                                                             wait(0.5, () => {
                                                                 if (!isBossAlive) return;
-            
+                                                                isBossInvulnerable = false;
                                                                 // Launch FlowerPillar once
                                                                 toggleFlowerPillarPosition();
                                                                 wait(1, () => {
@@ -1449,7 +1689,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                                     toggleFlowerPillarPosition();
                                                                     wait(2, () => {
                                                                         if (!isBossAlive) return;
-            
+                                                                        isBossInvulnerable = true;
                                                                         // Blink WarningBLUE 4 times
                                                                         toggleWarningBLUE();
                                                                         wait(0.5, () => {
@@ -1463,7 +1703,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                                                     toggleWarningBLUE();
                                                                                     wait(0.5, () => {
                                                                                         if (!isBossAlive) return;
-            
+                                                                                        isBossInvulnerable = false;
                                                                                         // Launch FlowerPillar once
                                                                                         toggleFlowerPillarPosition();
                                                                                         wait(1, () => {
@@ -1473,7 +1713,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                                                             toggleFlowerPillarPosition();
                                                                                             wait(2, () => {
                                                                                                 if (!isBossAlive) return;
-            
+                                                                                                isBossInvulnerable = true;
                                                                                                 // Blink WarningRED 4 times
                                                                                                 toggleWarningRED();
                                                                                                 wait(0.5, () => {
@@ -1487,7 +1727,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                                                                                                             toggleWarningRED();
                                                                                                             wait(0.5, () => {
                                                                                                                 if (!isBossAlive) return;
-            
+                                                                                                                isBossInvulnerable = false;
                                                                                                                 // Launch LeafSlapPosition once
                                                                                                                 toggleLeafSlapPosition();
                                                                                                                 wait(1, () => {
@@ -1569,7 +1809,9 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
         onCollide("bullet", "enemy", (bullet, enemy) => {
             destroy(bullet)
-            enemy.hurt(20)
+            if (!isBossInvulnerable) {
+                enemy.hurt(20);
+            }
         });
 
         player.onCollide("enemy", () => {
