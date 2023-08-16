@@ -252,22 +252,44 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             "                            ",
             "                            ",
             "                            ",
-            "  X                         ",
-            "  X                         ",
-            "  X                         ",
-            "  X                         ",
-            "  X                       C ",
-            "  X                       C ",
-            "  X                       C ",
-            "  X   ===                 C ",
-            "  X                       C ",
-            "  X                       C ",
-            "XXX                       C ",
+            " B                          ",
+            " B                          ",
+            " B                          ",
+            " B                          ",
+            " B                        C ",
+            " B                        C ",
+            " B                        C ",
+            " B    ===                 C ",
+            " B                        C ",
+            " B                        C ",
+            "BB                        C ",
             "============================",
             "----------------------------",
             "----------------------------",
         ],
         
+        [
+            "                            ",
+            "                            ",
+            "                            ",
+            "                            ",
+            "                            ",
+            " B                          ",
+            " B                          ",
+            " B                          ",
+            " B                          ",
+            " B                        C ",
+            " B                        C ",
+            " B                        C ",
+            " B                        C ",
+            " B                        C ",
+            " B                        C ",
+            "BB                        C ",
+            "============================",
+            "----------------------------",
+            "----------------------------",
+        ],
+
         [
             "                            ",
             "                            ",
@@ -289,24 +311,24 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             "----------------------------",
             "----------------------------",
         ],
-        
+
         [
             "                            ",
             "                            ",
             "                            ",
             "                            ",
             "                            ",
-            "  X                         ",
-            "  X                         ",
-            "  X                         ",
-            "  X                         ",
-            "  X                       C ",
-            "  X                       C ",
-            "  X                       C ",
-            "  X         ===           C ",
-            "  X                       C ",
-            "  X                       C ",
-            "XXX                       C ",
+            " B                      B  B",
+            " B                      B  B",
+            " B                      B  B",
+            " B                      B  B",
+            " B                      B  B",
+            " B                      B  B",
+            " B                      BBBB",
+            " B                        C ",
+            " B                        C ",
+            " B                        C ",
+            "BB                        C ",
             "============================",
             "----------------------------",
             "----------------------------",
@@ -354,6 +376,14 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                     offscreen({ hide: true }),
                     "Change map"
                 ],
+                "B": () => [ // Mur invisible pour par retourner à la limite en arrière
+                sprite("Barrier"),
+                body({ isStatic: true }),
+                area(),
+                anchor("bot"),
+                offscreen({ hide: true }),
+                
+            ],
             },
         };
         const level = addLevel(levels[levelId ?? 0], levelConf)
@@ -417,7 +447,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 // --- Player ---
 
-        const PLAYER_HEALTH = 120;
+        const PLAYER_HEALTH = 200;
         const player = add([
             sprite("Witch",{ anims: { idle: 0, run: [1, 2] } }),
             pos(width()/4, height()-64),
@@ -436,7 +466,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 
-            if (levelId == 1 || levelId == 2 || levelId == 3 ) { // Not useful for now, but when it will be, the OR opperator is -->  (levelId == 1 || levelId == 3)
+            if (levelId == 1 || levelId == 2 || levelId == 4 ) { // Not useful for now, but when it will be, the OR opperator is -->  (levelId == 1 || levelId == 4)
             player.onHurt(() => {
                 PlayerHealthbar.set(player.hp())
                 shake(10)
@@ -646,12 +676,31 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 
+        function movePlatforms() {
+            for (let p of platforms) {
+                p.prevPos = p.pos.clone(); // Store the previous position
+                p.pos = vec2(-100, -100);
+            }
+        }
+        
+        function restorePlateforms() {
+            for (let p of platforms) {
+                if (p.prevPos) {
+                    p.pos = p.prevPos;
+                    p.prevPos = null; // Clear the previous position after restoring
+                }
+            }
+        }
 
 
 
 
 
 
+
+
+        //---------
+        //BOSS ATTACKS FUNCTIONS
 
 
 
@@ -668,19 +717,19 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 let shouldSpawnParticles = true;
 let spawner;
-        function spawnParticlesAt(duration = 1) {
+        function spawnParticlesAt(x, y, duration = 1) {
             const particleColor = rgb(255, 198, 98); // Set the particle color to rgb(255,198,98)
         
             // Start the particle spawning loop
             spawner = loop(0.1, () => {
                 if (!shouldSpawnParticles) return;
                 const item = add([
-                    pos(width() / 4*2.7, height()-63),
+                    pos(x,y),
                     rect(8, 8), // Create a square of size 8x8 (change as needed)
                     color(particleColor),
                     anchor("center"),
                     scale(rand(0.5, 1)),
-                    area({ collisionIgnore: ["particle","enemy"] }),
+                    area({ collisionIgnore: ["particle","enemy","Change map"] }),
                     body(),
                     z(10),
                     lifespan(1, { fade: 0.5 }),
@@ -695,9 +744,8 @@ let spawner;
 
 
 
-        //---------
-        //BOSS ATTACKS FUNCTIONS
-
+// BOSS ATTACK : The Flower Pillar 
+//Explanation comes later.
         function createFlowerPillar() {
             return add([
                 rect(10, 50),
@@ -834,7 +882,7 @@ let spawner;
 
 // --- Boss ---
 
-        let BOSS_HEALTH = 1000
+        let BOSS_HEALTH = 100
         let isBossAlive = true;
         let boss;
         let flowerPillar;
@@ -978,8 +1026,9 @@ let spawner;
 
 
             function bossAttackPattern() {
+                
                 if (!isBossAlive) return;
-            
+                isBossInvulnerable = false;
                 // Launch PollenCannonBall 6 times
                 launchPollenCannonBall();
                 wait(1, () => {
@@ -1082,14 +1131,37 @@ let spawner;
                 });
             }
             
-            
-            
+            //Prevents any action from the player when arriving in a boss battle.
+            canMove=false
+            wait(2, () => {
+                canMove = true;
+                //Don't know why but this is necessary to be repeated each time, otherwise, the animation isn't played. 
+                ["left", "right", "up", "down"].forEach((key) => {
+                    if (canMove) {
+                        onKeyPress(key, () => {
+                            player.play("run");
+                        });
+                    }
+                });
+            });
+
+            isBossInvulnerable = true;
             wait(2, bossAttackPattern);
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
                 isBossAlive = false
-                destroy(enemy)
+
+                //These lines pauses the player when the enemy dies. 
+                
+                wait(1.5, () => {
+                    canMove=false
+                })
+                wait(3, () => {
+                    destroy(enemy)
+                    canMove=true
+                })
+            
                 destroy(healthbarGreyOutline)
                 destroy(BossName)
                 destroy(BossNameShadow)
@@ -1227,10 +1299,10 @@ let spawner;
 
             function bossAttackPattern() {
                 if (!isBossAlive) return;
+                isBossInvulnerable = false;
             
-            
-                spawnParticlesAt();
-                spawnParticlesAt();
+                spawnParticlesAt(width() / 4*2.7, height()-63);
+                spawnParticlesAt(width() / 4*2.7, height()-63);
                 wait(1, () => {
                     if (!isBossAlive) return;
                     launchPollenCannonBall();
@@ -1331,13 +1403,33 @@ let spawner;
                 });
             }
 
+            canMove=false
+            wait(2, () => {
+                canMove = true;
+                //Don't know why but this is necessary to be repeated each time, otherwise, the animation isn't played. 
+                ["left", "right", "up", "down"].forEach((key) => {
+                    if (canMove) {
+                        onKeyPress(key, () => {
+                            player.play("run");
+                        });
+                    }
+                });
+            });
+            isBossInvulnerable = true;
             wait(2, bossAttackPattern);
             
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
                 isBossAlive = false
-                destroy(enemy)
+                
+                wait(1.5, () => {
+                    canMove=false
+                })
+                wait(3, () => {
+                    destroy(enemy)
+                    canMove=true
+                })
                 destroy(healthbarGreyOutline)
                 destroy(BossName)
                 destroy(BossNameShadow)
@@ -1352,16 +1444,22 @@ let spawner;
         }
 
 
-        //----------------LEVEL 3----------------------
 
+        //----------------LEVEL 4----------------------
 
         if (levelId == 3 ) {
+            spawnParticlesAt(width(), height()-63);
+        }
+        //----------------LEVEL 4----------------------
+
+        let BOSS_HEALTH_FINAL = 2000
+        if (levelId == 4 ) {
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
                 area(),
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),
-                health(BOSS_HEALTH),
+                health(BOSS_HEALTH_FINAL),
                 
                 scale(1.5),
                 anchor("bot"),
@@ -1384,7 +1482,7 @@ let spawner;
                 z(2),
                 outline(2),
                 {
-                    max: BOSS_HEALTH,
+                    max: BOSS_HEALTH_FINAL,
                     set(hp) {
                         this.width = width()/2 * hp / this.max
                     },
@@ -1398,7 +1496,7 @@ let spawner;
                 z(1),
                 outline(2),
                 {
-                    max: BOSS_HEALTH,
+                    max: BOSS_HEALTH_FINAL,
                 }
             ])
             const BossName = add([
@@ -1427,6 +1525,48 @@ let spawner;
 
 
 
+            //PLATFORM MECANICS
+            //The basis of the logic is the same as LeafSlap and FlowerPillar
+            //However, ended up changing it to a function that creates and the function destroy.Moving the object out of the playable area seemed to teleport the player sometimes. 
+            //Hidding also wasn't effective. The attributes where still very much there making it so the player collided on invisible platforms. 
+            function createPlatform(x, y) {
+                return add([
+                    sprite("sol1"),
+                    pos(vec2(x, y)),
+                    area(),
+                    body({ isStatic: true }),
+                    anchor("bot"),
+                    "platforms",
+                ]);
+            }
+            
+            let platform1 = createPlatform(96, height()-112);
+            let platform2 = createPlatform(112, height()-112);
+            let platform3 = createPlatform(192, height()-112);
+            let platform4 = createPlatform(208, height()-112);
+            
+            function togglePlatforms() {
+                if (platform1) {
+                    platform1.destroy();
+                    platform1 = null;
+            
+                    platform2.destroy();
+                    platform2 = null;
+            
+                    platform3.destroy();
+                    platform3 = null;
+            
+                    platform4.destroy();
+                    platform4 = null;
+                } 
+                else {
+                    platform1 = createPlatform(96, height()-112);
+                    platform2 = createPlatform(112, height()-112);
+                    platform3 = createPlatform(192, height()-112);
+                    platform4 = createPlatform(208, height()-112);
+                }
+            }
+    
             // BOSS ATTACK : The Flower Pillar
             //The logic here is to create the object offscreen and move it every three seconds. 
             //This logic comes from discussing the best way to approach this attack pattern with CHATGPT. 
@@ -1473,7 +1613,7 @@ let spawner;
 // ---------------------
             function bossAttackPattern() {
                 if (!isBossAlive) return;
-            
+                isBossInvulnerable = false;
                 // Launch PollenCannonBall 6 times
                 launchPollenCannonBall();
                 wait(1, () => {
@@ -1534,7 +1674,7 @@ let spawner;
                                                                                 isBossInvulnerable = false;
                                                                                 // Launch LeafSlapPosition once
                                                                                 toggleLeafSlapPosition();
-                                                                                wait(1.5, () => {
+                                                                                wait(0.5, () => {
                                                                                     if (!isBossAlive) return;
             
                                                                                     // Hide LeafSlapPosition
@@ -1565,6 +1705,55 @@ let spawner;
             }
             
             function secondPartOfPattern() {
+                togglePlatforms()
+                // Launch PollenCannonBall 2 times
+                launchPollenCannonBall();
+                wait(1, () => {
+                    if (!isBossAlive) return;
+                    launchPollenCannonBall();
+                    wait(1, () => {
+                        if (!isBossAlive) return;
+                        shouldSpawnParticles = true;
+                        spawnParticlesAt(width() / 4*2.7, height()-63);
+                        
+                        isBossInvulnerable = true;
+                        // Blink WarningBLUE 4 times
+                        toggleWarningBLUE();
+                        wait(0.5, () => {
+                            if (!isBossAlive) return;
+                            toggleWarningBLUE();
+                            wait(0.5, () => {
+                                if (!isBossAlive) return;
+                                toggleWarningBLUE();
+                                wait(0.5, () => {
+                                    if (!isBossAlive) return;
+                                    toggleWarningBLUE();
+                                    wait(0.5, () => {
+                                        if (!isBossAlive) return;
+                                        isBossInvulnerable = false;
+                                        // Launch FlowerPillar once
+                                        toggleFlowerPillarPosition();
+                                        wait(1, () => {
+                                            if (!isBossAlive) return;
+            
+                                            // Hide FlowerPillar
+                                            toggleFlowerPillarPosition();
+                                            wait(2, () => {
+                                                if (!isBossAlive) return;
+                                                
+                                                secondPartOfPatternPart2();
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            }
+//Cut things out and ended up multiplying the second part of the pattern by 2. It was easier to work with at this stage. 
+            function secondPartOfPatternPart2() {
+                
                 // Launch PollenCannonBall 2 times
                 launchPollenCannonBall();
                 wait(1, () => {
@@ -1596,39 +1785,9 @@ let spawner;
                                             toggleFlowerPillarPosition();
                                             wait(2, () => {
                                                 if (!isBossAlive) return;
-                                                isBossInvulnerable = true;
-                                                // Blink WarningRED 4 times
-                                                toggleWarningRED();
-                                                wait(0.5, () => {
-                                                    if (!isBossAlive) return;
-                                                    toggleWarningRED();
-                                                    wait(0.5, () => {
-                                                        if (!isBossAlive) return;
-                                                        toggleWarningRED();
-                                                        wait(0.5, () => {
-                                                            if (!isBossAlive) return;
-                                                            toggleWarningRED();
-                                                            wait(0.5, () => {
-                                                                if (!isBossAlive) return;
-                                                                isBossInvulnerable = false;
-                                                                // Launch LeafSlapPosition once
-                                                                toggleLeafSlapPosition();
-                                                                wait(1, () => {
-                                                                    if (!isBossAlive) return;
-                                                                    
-                                                                    // Hide LeafSlapPosition
-                                                                    toggleLeafSlapPosition();
-                                                                    wait(1, () => {
-                                                                        if (!isBossAlive) return;
-                                                                        
-                                                                        // Rest of the attack pattern
-                                                                        thirdPartOfPattern();
-                                                                    });
-                                                                });
-                                                            });
-                                                        });
-                                                    });
-                                                });
+                                                shouldSpawnParticles = false;
+                                                togglePlatforms()
+                                                thirdPartOfPattern();
                                             });
                                         });
                                     });
@@ -1730,12 +1889,12 @@ let spawner;
                                                                                                                 isBossInvulnerable = false;
                                                                                                                 // Launch LeafSlapPosition once
                                                                                                                 toggleLeafSlapPosition();
-                                                                                                                wait(1, () => {
+                                                                                                                wait(0.5, () => {
                                                                                                                     if (!isBossAlive) return;
             
                                                                                                                     // Hide LeafSlapPosition and Launch PollenCannonBall 4 times
                                                                                                                     toggleLeafSlapPosition();
-                                                                                                                    wait(1, () => {
+                                                                                                                    wait(0.5, () => {
                                                                                                                         if (!isBossAlive) return;
                                                                                                                         launchPollenCannonBall();
                                                                                                                         wait(1, () => {
@@ -1781,15 +1940,32 @@ let spawner;
                 });
             }
             
-            
-            
+            canMove=false
+            wait(2, () => {
+                canMove = true;
+                //Don't know why but this is necessary to be repeated each time, otherwise, the animation isn't played. 
+                ["left", "right", "up", "down"].forEach((key) => {
+                    if (canMove) {
+                        onKeyPress(key, () => {
+                            player.play("run");
+                        });
+                    }
+                });
+            });
+            isBossInvulnerable = true;
             wait(2, bossAttackPattern);
             
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
                 isBossAlive = false
-                destroy(enemy)
+                wait(1.5, () => {
+                    canMove=false
+                })
+                wait(3, () => {
+                    destroy(enemy)
+                    canMove=true
+                })
                 destroy(healthbarGreyOutline)
                 destroy(BossName)
                 destroy(BossNameShadow)
@@ -1828,7 +2004,7 @@ let spawner;
         });
 
         player.onCollide("leafSlap", () => {
-            player.hurt(20);
+            player.hurt(40);
         });
 
         on("death", "player", (player) => {
