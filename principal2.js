@@ -624,6 +624,43 @@ function SpeechBubbleSoundProgression() {
     });
 }
 
+
+
+
+
+
+function SpeechBubblePauseProgression() {
+    if (levelId !== 1 && levelId !== 2 && levelId !== 4) return;
+    if (!level.paused) return;
+    // Check if the boss is alive using isBossAlive
+    if (!isBossAlive) return;
+    
+    // Toggle the speech bubble
+    toggleSpeechBubblePause();
+    
+    // Update the speech text
+    speechTextPause.text = dialogsPause[curDialogPause];
+    
+    // Wait for 3 seconds
+    wait(3, () => {
+        curDialogPause++; // Move to the next dialogue
+        
+        // If we've reached the end of the dialogues
+        if (curDialogPause >= dialogsPause.length) {
+            curDialogPause = 0; // Reset to the beginning of the dialogues
+            
+            // Wait for 3 seconds before restarting the dialogues
+            wait(3, () => {
+                SpeechBubblePauseProgression();
+            });
+        } else {
+            // Continue with the next dialogue
+            SpeechBubblePauseProgression();
+        }
+    });
+}
+
+
 //DIALOGS LEVELID 0
 const dialogs = [
     "Sorcière, la forêt murmure d'un danger...",
@@ -987,7 +1024,7 @@ function toggleSpeechBubble3() {
 const dialogs4 = [
     "Vous l'avez terrassé? Merci beaucoup!!!",
     "En plus d'asphyxier notre forêt, Ambroisie est hautement allergène pour les humains.",
-    "L'absence d'Ambroisie sera bénéfique pour tous!",
+    "Son absence sera bénéfique pour tous!",
     " La forêt et moi-même vous sommes profondément reconnaissants."
 ];
 
@@ -1053,10 +1090,12 @@ const speechText4 = add([
     scale(0.25)
 ]);
 
-
+let platformsPresent = true;
 function toggleSpeechBubble4() {
     if (speechBubble4.pos.x < 0) {
-        togglePlatforms()
+        if (platformsPresent) {
+            togglePlatforms()
+        }
         speechBubble4.pos = vec2(140, height()/2-30);
         speechText4.pos = vec2(140, height()/2-30);  // Align text with bubble
         triangleVisible4 = true;;
@@ -1139,6 +1178,106 @@ function toggleSpeechBubbleSound() {
         triangleVisibleSound = false;
     }
 }
+
+
+//--------------------------------------------
+//Ambroisia pause
+
+const dialogsPause = [
+    "Qu'est-ce qui se passe ici ?",
+
+    "C'est quoi ce bruit ?",
+
+    "Tu ne peux pas être blessé?",
+
+    "Tout a changé si rapidement. ",
+
+    "Que s'est-il passé ?",
+
+    "Allo, y a-t-il quelqu'un ?",
+
+    "Est-ce que quelqu'un peut m'entendre ?",
+
+    "Es-tu même réel?",
+
+    "Rien ne te touche?",
+
+    "C'est trop calme",
+
+    "J'aime pas quand c'est trop calme",
+
+    "Toujours aucune égratignure?",
+
+    "Invincible, vraiment?",
+
+    "Ton pouvoir est-il sans fin ?",
+
+
+];
+
+let curDialogPause = 0;
+
+let speechBubblePause = add([
+    rect(160, 26, { radius: 8 }),  // Adjust the size as needed
+    pos(-100, -100),
+    anchor("center"),
+    color(0, 0, 0),
+    opacity(0.9),
+    area(),
+    "speechBubble"
+]);
+
+let triangleVisiblePause = false;
+
+function drawSpeechBubbleTrianglePause() {
+    if (triangleVisiblePause) {
+        drawTriangle({
+            p1: vec2(35, -5),
+            p2: vec2(32, 7),
+            p3: vec2(44, -5),
+            pos: vec2(width() / 4 * 3, height()/2-42), // Adjust as necessary
+            color: rgb(0, 0, 0),
+            opacity: 0.9,
+        });
+    }
+}
+
+onDraw(() => {
+    drawSpeechBubbleTrianglePause();
+});
+
+
+
+const speechTextPause = add([
+    text(dialogsPause[curDialogPause], { size: 40, width: 700, align: "center",font: "alagard", }),
+    pos(speechBubblePause.pos.x, speechBubblePause.pos.y),
+    anchor("center"),
+    color(255, 255, 255),
+    scale(0.25)
+]);
+
+
+function toggleSpeechBubblePause() {
+    if (level.paused) {
+        speechBubblePause.pos = vec2(width() / 4 * 3+30, height()/2-60);
+        speechTextPause.pos = vec2(width() / 4 * 3+30, height()/2-60);  // Align text with bubble
+        triangleVisiblePause = true;;
+
+    } else {
+        speechBubblePause.pos = vec2(-100, -100);
+        speechTextPause.pos = vec2(-100, -100);  // Hide text with bubble
+        triangleVisiblePause = false;
+    }
+}
+
+
+
+
+
+
+
+
+
 
 //width() / 4 * 3, height()-63
 //----------------LEVEL 0----------------------
@@ -1596,7 +1735,7 @@ let spawner;
 
 
 
-
+let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent spammer la touche escape pour sortir des sentiers battus. Bonjour, je suis le speedrunner.
 
 
 
@@ -1744,6 +1883,7 @@ let spawner;
                     canMove = false;
                     toggleSpeechBubble2();
                     isDialogueActive = true;
+                    cinematic=false;
                 }
             });
             
@@ -1924,6 +2064,7 @@ let spawner;
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
                 isBossAlive = false
+                cinematic = true;
                 SpeechBubbleSoundProgression() 
                 //These lines pauses the player when the enemy dies. 
                 
@@ -2066,7 +2207,7 @@ let spawner;
                     
                     hoodedFigure.pos = vec2(width(), height()-64);  // Optional: Set exact position
                     hoodedFigure.enterState("idle");
-
+                    cinematic=false;
                 }
             });
 
@@ -2234,6 +2375,7 @@ let spawner;
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
                 isBossAlive = false
+                cinematic=true;
                 SpeechBubbleSoundProgression() 
                 wait(1.5, () => {
                     canMove=false
@@ -2380,7 +2522,7 @@ let spawner;
                     canMove = false;
                     isDialogueActive = true;
                     toggleSpeechBubble4();
-
+                    cinematic=false;
                 }
             });
 
@@ -2406,6 +2548,8 @@ let spawner;
             
             function togglePlatforms() {
                 if (platform1) {
+                    platformsPresent = false;
+
                     platform1.destroy();
                     platform1 = null;
             
@@ -2423,6 +2567,8 @@ let spawner;
                     platform2 = createPlatform(112, height()-112);
                     platform3 = createPlatform(192, height()-112);
                     platform4 = createPlatform(208, height()-112);
+
+                    platformsPresent = true;
                 }
             }
     
@@ -2818,6 +2964,7 @@ let spawner;
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
                 isBossAlive = false
+                cinematic=true;
                 SpeechBubbleSoundProgression() 
                 wait(1.5, () => {
                     canMove=false
@@ -3005,7 +3152,7 @@ onKeyPress("escape", () => {
         pauseMenu.paused = false;
         player.paused = true;
         bullet.paused = true;
-
+        SpeechBubblePauseProgression();
         canMove = false;
         //if (levelId == 1) {
         //    
@@ -3020,8 +3167,10 @@ onKeyPress("escape", () => {
             pauseMenu.paused = true;
             player.paused = false;
             bullet.paused = false;
-
-            canMove = !isDialogueActive;
+            toggleSpeechBubblePause();
+            SpeechBubblePauseProgression();
+            if (cinematic===false)
+                canMove = !isDialogueActive;
             //if (levelId == 1) {
             //    
             //    boss.paused = false;
