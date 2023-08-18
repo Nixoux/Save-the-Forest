@@ -50,6 +50,7 @@ scene("accueil", () => {
             pos(0, -16),
             scale(1),
             z(-1),
+            "background3"
     ]);
     
     const spriteWidth = 320;
@@ -409,7 +410,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
         const backgroundWidth = 448; // Calcul a été 74 (le nombre d'= sur la longueur dans la grid) x 16 (le nombre de pixel de chaque tuile)
         const spriteWidth = 320; // Largeur du sprite de base
 
-
+        //let destroyBackground3 = false;
         //Le sprite du background
         const background = add([
         sprite("background_layer_1"),
@@ -423,13 +424,15 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             scale(1),
             z(-2),
         ]);
+        //if (!destroyBackground3) {
         const background3 = add([
             sprite("background_layer_3"),
             pos(0, -16),
             scale(1),
             z(-1),
+            "background3"
         ]);
-
+        //}
         // Repète le background horizontalement (proposé par CHATGPT)
         for (let i = 1; i < Math.ceil(backgroundWidth / spriteWidth) + 1; i++) { //La fonction Math.ceil() retourne le plus petit entier supérieur ou égal au nombre donné
         add([                                                                    //+ 1 ajoute une sprite en plus pour s'assurer que le background est rempli même si il devrait il y avoir un gap qui est moins que la largeur du sprite.
@@ -443,12 +446,14 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
             pos(spriteWidth * i, -16),
             scale(1),
             z(-2),
+            
         ]);
         add([                                                                    //+ 1 ajoute une sprite en plus pour s'assurer que le background est rempli même si il devrait il y avoir un gap qui est moins que la largeur du sprite.
             sprite("background_layer_3"),
             pos(spriteWidth * i, -16),
             scale(1),
             z(-1),
+            "background3"
         ]);
         }
 
@@ -1391,6 +1396,13 @@ const timer = add([
 onUpdate(() => {
     if (!level.paused && timerPaused) {  // Only update if the level and timer are both not paused
         timeLeft -= dt();
+        //if (timeLeft < 170) {
+        //    const bgs = get("background3");
+        //    for (let bg of bgs) {
+        //        bg.destroy()
+        //    }
+        //    destroyBackground3 = true;
+        //}
         if (timeLeft < 0) {
             go("Defaite");
         }
