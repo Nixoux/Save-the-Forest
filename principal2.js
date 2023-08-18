@@ -144,44 +144,44 @@ scene("accueil", () => {
 
 
 
-    const ProtoRec = add([
-        rect(width()/1.2, height()/2, { radius: 4 }),
-        pos(center().x, center().y - 27),
-        color(255, 255, 255),
-        anchor("top"),
-        fixed(),
-        z(2),
-        outline(1)
-    ]);
-// 
-    const ProtoTxtTitre = add([
-        text("Prototype par Nicolas VERDES", {
-            size: 20,
-            align: "center",
-            font: "Arial",
-            
-        }), 
-        color(255, 0, 0),
-        z(3),
-        anchor("center"),
-        pos(center().x, center().y + -10)
-    ]);
-
-    const ProtoTxt = add([
-        text("Vous incarnez une petite sorcière qui part à l'aventure pour défendre sa forêt d'une plante invasive. Dans sa version finale, le jeu mélangera narration et séquence d'action.", {
-            size: 15,
-            align: "center",
-            font: "Arial",
-            width: 350,
-            
-            
-        }), 
-        scale(1),
-        color(0, 0, 0),
-        z(3),
-        anchor("center"),
-        pos(center().x, center().y + height()/5.5)
-    ]);
+    //const ProtoRec = add([
+    //    rect(width()/1.2, height()/2, { radius: 4 }),
+    //    pos(center().x, center().y - 27),
+    //    color(255, 255, 255),
+    //    anchor("top"),
+    //    fixed(),
+    //    z(2),
+    //    outline(1)
+    //]);
+// //
+    //const ProtoTxtTitre = add([
+    //    text("Prototype par Nicolas VERDES", {
+    //        size: 20,
+    //        align: "center",
+    //        font: "Arial",
+    //        
+    //    }), 
+    //    color(255, 0, 0),
+    //    z(3),
+    //    anchor("center"),
+    //    pos(center().x, center().y + -10)
+    //]);
+//
+    //const ProtoTxt = add([
+    //    text("Vous incarnez une petite sorcière qui part à l'aventure pour défendre sa forêt d'une plante invasive. Dans sa version finale, le jeu mélangera narration et séquence d'action.", {
+    //        size: 15,
+    //        align: "center",
+    //        font: "Arial",
+    //        width: 350,
+    //        
+    //        
+    //    }), 
+    //    scale(1),
+    //    color(0, 0, 0),
+    //    z(3),
+    //    anchor("center"),
+    //    pos(center().x, center().y + height()/5.5)
+    //]);
 
     //Instruction pour commencer le jeu 
     const instru = add([
@@ -199,7 +199,7 @@ scene("accueil", () => {
         }),
         z(4),
         anchor("center"),
-        pos(center().x, height()-15)
+        pos(center().x, height()-24)
 
     ]);
     
@@ -558,6 +558,7 @@ onKeyPress("enter", () => {
                 //initializeTimer()
                 timerPaused = !timerPaused;
                 timer.hidden = false;
+                borderOut()
             } else {
                 curDialog++;
                 speechText.text = dialogs[curDialog];
@@ -571,6 +572,7 @@ onKeyPress("enter", () => {
                 canMove = true;
                 isDialogueActive = false; // Dialogue is no longer active
                 timerPaused = !timerPaused;
+                borderOut()
             } else {
                 curDialog2++;
                 speechText2.text = dialogs2[curDialog2];
@@ -584,6 +586,7 @@ onKeyPress("enter", () => {
                 canMove = true;
                 isDialogueActive = false; // Dialogue is no longer active
                 timerPaused = !timerPaused;
+                borderOut2();
                 wait(0.1, () => {
                     timer.hidden = false;
                     })
@@ -1500,11 +1503,111 @@ onUpdate(() => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+//---------------------------------------------
+//The borders
+//---------------------------------------------
+
+
+    let endPos1 = vec2(width() / 2, height() - 43);
+    let startPos = vec2(0, 0);  // Starting position
+
+    let border1 = add([
+        rect(width(), 20),
+        pos(width() / 2, height()-1), //pos(width() / 2, height()-43),
+        color(0, 0, 0),
+        anchor("top"),
+        state("idle"),
+    ]);
+
+    let border2 = add([
+        rect(width(), 20),
+        pos(width() / 2, -42), //  pos(width() / 2, 0),
+        color(0, 0, 0),
+        anchor("bot"),
+        state("idle"),
+    ]);
+
+    border1.onStateUpdate("In", () => {
+        const dir = vec2(width() / 2, height()-43).sub(border1.pos).unit();
+        border1.move(dir.scale(50)); 
+    
+        // Stop moving when close enough to target
+        if (border1.pos.dist(vec2(width() / 2, height()-43)) < 5) {
+            
+            border1.pos = vec2(width() / 2, height()-43);  
+        }
+    });
+
+
+    border2.onStateUpdate("In", () => {
+        const dir = vec2(width() / 2, 0).sub(border2.pos).unit();
+        border2.move(dir.scale(50)); 
+    
+        // Stop moving when close enough to target
+        if (border2.pos.dist(vec2(width() / 2, 0)) < 5) {
+            
+            border2.pos = vec2(width() / 2, 0);  
+        }
+    });
+
+    border1.onStateUpdate("Out", () => {
+        const dir = vec2(width() / 2, height()-1).sub(border1.pos).unit();
+        border1.move(dir.scale(50)); 
+    
+        // Stop moving when close enough to target
+        if (border1.pos.dist(vec2(width() / 2, height()-1)) < 5) {
+            
+            border1.pos = vec2(width() / 2, height()-1);  
+        }
+    });
+
+
+    border2.onStateUpdate("Out", () => {
+        const dir = vec2(width() / 2, -42).sub(border2.pos).unit();
+        border2.move(dir.scale(50)); 
+    
+        // Stop moving when close enough to target
+        if (border2.pos.dist(vec2(width() / 2, -42)) < 5) {
+            
+            border2.pos = vec2(width() / 2, -42);  
+        }
+    });
+
+
+
+
+
+    function borderIn() {
+
+        border1.enterState("In");
+        border2.enterState("In");
+    }
+    
+    function borderOut() {
+
+        border1.enterState("Out");
+        border2.enterState("Out");
+        
+
+    }
+
+
 //
 //----------------LEVEL 0----------------------
 //
 
         if (levelId == 0) {
+            borderIn()
             timer.hidden = true;
             const hoodedFigure = add([
                 sprite("Hero"),
@@ -2316,9 +2419,11 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
+                borderIn()
                 isBossAlive = false;
                 timerPaused = false;
                 cinematic = true;
+                
                 SpeechBubbleSoundProgression() 
                 //These lines pauses the player when the enemy dies. 
                 
@@ -2649,15 +2754,17 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 isBossAlive = false
                 cinematic=true;
                 SpeechBubbleSoundProgression() 
-                wait(1.5, () => {
-                    canMove=false
+                wait(0.5, () => {
+                    canMove=false,
+                    borderIn()
                 })
                 wait(3, () => {
                     destroy(enemy)
-                    hoodedFigure.enterState("move");
-                    wait(1, () => {
+                    
+                    wait(0.5, () => {
                         timerPaused = true;
                         canMove = true;
+                        hoodedFigure.enterState("move");
                     })
                 })
                 destroy(healthbarGreyOutline)
@@ -2678,8 +2785,57 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
         //----------------LEVEL 3----------------------
 
         if (levelId == 3 ) {
+
+            let border3 = add([
+                rect(width(), 20),
+                pos(width() / 2,  height()-43), //pos(width() / 2, height()-43),
+                color(0, 0, 0),
+                anchor("top"),
+                state("idle"),
+            ]);
+        
+            let border4 = add([
+                rect(width(), 20),
+                pos(width() / 2, 0), //  pos(width() / 2, 0),
+                color(0, 0, 0),
+                anchor("bot"),
+                state("idle"),
+            ]);
+        
+        
+            border3.onStateUpdate("Out", () => {
+                const dir = vec2(width() / 2, height()-1).sub(border3.pos).unit();
+                border3.move(dir.scale(50)); 
+            
+                // Stop moving when close enough to target
+                if (border3.pos.dist(vec2(width() / 2, height()-1)) < 5) {
+                    
+                    border3.pos = vec2(width() / 2, height()-1);  
+                }
+            });
+        
+        
+            border4.onStateUpdate("Out", () => {
+                const dir = vec2(width() / 2, -42).sub(border4.pos).unit();
+                border4.move(dir.scale(50)); 
+            
+                // Stop moving when close enough to target
+                if (border4.pos.dist(vec2(width() / 2, -42)) < 5) {
+                    
+                    border4.pos = vec2(width() / 2, -42);  
+                }
+            });
+        
+            function borderOut2() {
+        
+                border3.enterState("Out");
+                border4.enterState("Out");
+            
+        
+            }
             //initializeTimer()
             timer.hidden = true;
+            
             canMove = false;
             spawnParticlesAt(width(), height()-63);
             const hoodedFigure = add([
@@ -3252,6 +3408,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
+                borderIn(),
                 timerPaused = false;
                 isBossAlive = false
                 cinematic=true;
