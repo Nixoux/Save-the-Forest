@@ -655,7 +655,7 @@ function SpeechBubbleSoundProgression() {
 
 //Boss related dialogue 
 function SpeechBubblePauseProgression() {
-    if (levelId !== 1 && levelId !== 2 && levelId !== 4) return;
+    if (levelId !== 1 || levelId !== 2 || levelId !== 4) return;
     if (!level.paused) return;
     if (!isBossAlive) return;
     
@@ -685,9 +685,26 @@ function SpeechBubblePauseProgression() {
 
 
 
+function FightCountdownProgression() {
+    // If the game is paused, do nothing
+    if (level.paused) return;
 
+    if (levelId === 1 || levelId === 2 || levelId === 4) {
+        // Update the fight count text to the current value
+        fightCountText.text = fightCount[curfightCount];
+        fightCountTextShadow.text = fightCount[curfightCount];
+        console.log("Current Countdown Value:", fightCountText.text);  // Logging the current value for debugging
 
+        // Increment the current fight count
+        curfightCount++;
 
+        // If it's the last dialogue
+        if (curfightCount >= fightCount.length) {
+            togglefightCount();  // Call the toggle function to hide
+            curfightCount = 0;  // Reset dialog
+        }
+    }
+}
 
 
 
@@ -1602,12 +1619,56 @@ onUpdate(() => {
     }
 
 
+
+//The countdown
+
+const fightCount = [
+    "3",
+    "2",
+    "1",
+];
+
+let curfightCount = 0;
+
+
+const fightCountText  = add([
+    text(fightCount [curfightCount ], { size: 30, align: "center",font: "alagard", }),
+    pos(-100, -100),
+    anchor("center"),
+    color(255, 255, 255),
+    scale(1),
+    z(10)
+]);
+
+const fightCountTextShadow  = add([
+    text(fightCount [curfightCount ], { size: 30, align: "center",font: "alagard", }),
+    pos(-100, -100),
+    anchor("center"),
+    color(0, 0, 0),
+    scale(1),
+    z(9)
+]);
+
+function togglefightCount() {
+    if (fightCountText.pos.x < 0) {
+
+        fightCountText.pos = vec2(width()/2, height()/2); 
+        fightCountTextShadow.pos = vec2(width()/2+2, height()/2+2)
+    } else {
+     
+        fightCountText.pos = vec2(-100, -100); 
+        fightCountTextShadow.pos = vec2(-100, -100); 
+   
+    }
+}
+
 //
 //----------------LEVEL 0----------------------
 //
 
         if (levelId == 0) {
             borderIn()
+            
             timer.hidden = true;
             const hoodedFigure = add([
                 sprite("Hero"),
@@ -1776,7 +1837,7 @@ wait(0.7, () => {
             
           //});
 
-
+          
 
 // --- Pas de retour en arrière | Placeholder textbubble2 | Avancé des niveau ou victoire---
 
@@ -2398,7 +2459,27 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
             //Prevents any action from the player when arriving in a boss battle.
             canMove=false
-            wait(2, () => {
+            togglefightCount();
+            FightCountdownProgression()
+            wait(0.5, () =>{
+                togglefightCount();
+                wait(0.5, () =>{
+                    togglefightCount();
+                    FightCountdownProgression()
+                    wait(0.5, () =>{
+                        togglefightCount();
+                        wait(0.5, () =>{
+                            togglefightCount();
+                            FightCountdownProgression()
+                            togglefightCount();
+                            wait(0.5, () =>{
+                                togglefightCount();
+                            })
+                        })
+                    })
+                })
+            })
+            wait(3, () => {
                 timerPaused = !timerPaused;
                 wait(0.1, () => {
                     timer.hidden = false;
@@ -2415,7 +2496,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             });
 
             isBossInvulnerable = true;
-            wait(2, bossAttackPattern);
+            wait(3, bossAttackPattern);
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
@@ -2729,7 +2810,29 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
  
             //Prevents any action from the player when arriving in a boss battle.
             canMove=false
-            wait(2, () => {
+            togglefightCount();
+            FightCountdownProgression()
+            wait(0.5, () =>{
+                togglefightCount();
+                wait(0.5, () =>{
+                    togglefightCount();
+                    FightCountdownProgression()
+                    wait(0.5, () =>{
+                        togglefightCount();
+                        wait(0.5, () =>{
+                            togglefightCount();
+                            FightCountdownProgression()
+                            togglefightCount();
+                            wait(0.5, () =>{
+                                togglefightCount();
+                            })
+                        })
+                    })
+                })
+            })
+
+
+            wait(3, () => {
                 timerPaused = !timerPaused;
                 wait(0.1, () => {
                     timer.hidden = false;
@@ -2745,7 +2848,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 });
             });
             isBossInvulnerable = true;
-            wait(2, bossAttackPattern);
+            wait(3, bossAttackPattern);
             
             
             //All the things happening when Ambroisia dies. 
@@ -3387,7 +3490,29 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
              
             //Prevents any action from the player when arriving in a boss battle.
             canMove=false
-            wait(2, () => {
+
+            togglefightCount();
+            FightCountdownProgression()
+            wait(0.5, () =>{
+                togglefightCount();
+                wait(0.5, () =>{
+                    togglefightCount();
+                    FightCountdownProgression()
+                    wait(0.5, () =>{
+                        togglefightCount();
+                        wait(0.5, () =>{
+                            togglefightCount();
+                            FightCountdownProgression()
+                            togglefightCount();
+                            wait(0.5, () =>{
+                                togglefightCount();
+                            })
+                        })
+                    })
+                })
+            })
+
+            wait(3, () => {
                 timerPaused = !timerPaused;
                 wait(0.1, () => {
                 timer.hidden = false;
@@ -3403,7 +3528,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 });
             });
             isBossInvulnerable = true;
-            wait(2, bossAttackPattern);
+            wait(3, bossAttackPattern);
             
             
             //All the things happening when Ambroisia dies. 
