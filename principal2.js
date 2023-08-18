@@ -22,7 +22,7 @@ const SPEED = 200;
 setGravity(2500);
 const FLOOR_POS = 300; // 2 is added to the height to make the player stay above the floor (CHATGPT) (Solution for a GLITCH THAT MAY NOT EXIST)
 canMove = true;
-
+const FOREST_HEALTH = 300;
 
 
 
@@ -216,8 +216,8 @@ scene("accueil", () => {
 
 
 
-
-
+//let remainingTime = "01:11";
+let timeLeft = 180;
 
 
 //NIVEAU 1
@@ -455,6 +455,9 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 
+
+
+
 // --- Player ---
 
         const PLAYER_HEALTH = 200;
@@ -525,12 +528,14 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 //-------------------------------
-//DIALOGS
+//Dialog related functions. Inspired by the kaboom playground, this tutorial : https://www.youtube.com/watch?v=8i2K7uwh124&list=LL&index=2 and with the help of CHATGPT.
 //-------------------------------
 
 
 let isDialogueActive = false;
 
+
+//NPC related dialogue 
 onKeyPress("enter", () => {
     // If the game is paused, do nothing
     if (level.paused) return;
@@ -542,9 +547,12 @@ onKeyPress("enter", () => {
             // If it's the last dialogue
             if (curDialog === dialogs.length - 1) {
                 toggleSpeechBubble();  // Call the toggle function
-                curDialog = 0; // Reset dialog or do any other behavior you want!
+                curDialog = 0; // Reset dialog
                 canMove = true;
                 isDialogueActive = false; // Dialogue is no longer active
+                //initializeTimer()
+                timerPaused = !timerPaused;
+                timer.hidden = false;
             } else {
                 curDialog++;
                 speechText.text = dialogs[curDialog];
@@ -554,9 +562,10 @@ onKeyPress("enter", () => {
             // If it's the last dialogue
             if (curDialog2 === dialogs2.length - 1) {
                 toggleSpeechBubble2();  // Call the toggle function
-                curDialog2 = 0; // Reset dialog or do any other behavior you want!
+                curDialog2 = 0; // Reset dialog
                 canMove = true;
                 isDialogueActive = false; // Dialogue is no longer active
+                timerPaused = !timerPaused;
             } else {
                 curDialog2++;
                 speechText2.text = dialogs2[curDialog2];
@@ -566,9 +575,14 @@ onKeyPress("enter", () => {
             // If it's the last dialogue
             if (curDialog3 === dialogs3.length - 1) {
                 toggleSpeechBubble3();  // Call the toggle function
-                curDialog3 = 0; // Reset dialog or do any other behavior you want!
+                curDialog3 = 0; // Reset dialog
                 canMove = true;
                 isDialogueActive = false; // Dialogue is no longer active
+                timerPaused = !timerPaused;
+                wait(0.1, () => {
+                    timer.hidden = false;
+                    })
+
             } else {
                 curDialog3++;
                 speechText3.text = dialogs3[curDialog3];
@@ -578,9 +592,10 @@ onKeyPress("enter", () => {
             // If it's the last dialogue
             if (curDialog4 === dialogs4.length - 1) {
                 toggleSpeechBubble4();  // Call the toggle function
-                curDialog4 = 0; // Reset dialog or do any other behavior you want!
+                curDialog4 = 0; // Reset dialog
                 canMove = true;
                 isDialogueActive = false; // Dialogue is no longer active
+                wait(1, go("Victoire"))
             } else {
                 curDialog4++;
                 speechText4.text = dialogs4[curDialog4];
@@ -589,6 +604,8 @@ onKeyPress("enter", () => {
     }
 });
 
+
+//Boss related dialogue 
 let AmbrosiaNoise = false;
 function SpeechBubbleSoundProgression() {
     // Check if the game is paused or AmbrosiaNoise is true
@@ -602,24 +619,24 @@ function SpeechBubbleSoundProgression() {
     } else if (levelId === 4) {
         curDialogSound = 2;
     } else {
-        return;  // If the levelId is not 1, 2, or 4, exit the function
+        return;  //  Exit the function if the levelId is not 1, 2, or 4.
     }
 
     // Update the speech text
     speechTextSound.text = dialogsSound[curDialogSound];
 
-    // Set AmbrosiaNoise to true to prevent further triggers
+    // prevent further triggers
     AmbrosiaNoise = true;
 
     // Call toggleSpeechBubbleSound to show the speech bubble
     toggleSpeechBubbleSound();
 
-    // Wait for 4 seconds
+    // Wait for 3 seconds
     wait(3, () => {
         // Call toggleSpeechBubbleSound again to make it disappear
         toggleSpeechBubbleSound();
 
-        // Reset AmbrosiaNoise to false in case you need to use it again
+        // Reset AmbrosiaNoise to false to call it back each time the boss dies.
         AmbrosiaNoise = false;
     });
 }
@@ -628,11 +645,10 @@ function SpeechBubbleSoundProgression() {
 
 
 
-
+//Boss related dialogue 
 function SpeechBubblePauseProgression() {
     if (levelId !== 1 && levelId !== 2 && levelId !== 4) return;
     if (!level.paused) return;
-    // Check if the boss is alive using isBossAlive
     if (!isBossAlive) return;
     
     // Toggle the speech bubble
@@ -643,12 +659,10 @@ function SpeechBubblePauseProgression() {
     
     // Wait for 3 seconds
     wait(3, () => {
-        curDialogPause++; // Move to the next dialogue
-        
-        // If we've reached the end of the dialogues
+        curDialogPause++; 
+
         if (curDialogPause >= dialogsPause.length) {
-            curDialogPause = 0; // Reset to the beginning of the dialogues
-            
+            curDialogPause = 0; 
             // Wait for 3 seconds before restarting the dialogues
             wait(3, () => {
                 SpeechBubblePauseProgression();
@@ -661,7 +675,18 @@ function SpeechBubblePauseProgression() {
 }
 
 
+
+
+
+
+
+
+
+
+
+//-----------------------------------------
 //DIALOGS LEVELID 0
+//-----------------------------------------
 const dialogs = [
     "Sorcière, la forêt murmure d'un danger...",
     "...une plante envahissante nommée Ambroisie...",
@@ -676,7 +701,7 @@ let curDialog = 0;
 
 // Speech Bubble
 let speechBubble = add([
-    rect(200, 36, { radius: 8 }),  // Adjust the size as needed
+    rect(200, 36, { radius: 8 }),  
     pos(-100, -100),
     anchor("center"),
     color(0, 0, 0),
@@ -685,6 +710,7 @@ let speechBubble = add([
     "speechBubble"
 ]);
 
+//speech bubble triangle
 let triangleVisible = false;
 
 function drawSpeechBubbleTriangle() {
@@ -693,7 +719,7 @@ function drawSpeechBubbleTriangle() {
             p1: vec2(0, 0),
             p2: vec2(20, 12),
             p3: vec2(17, 0),
-            pos: vec2(210, height()/2-12), // Adjust as necessary
+            pos: vec2(210, height()/2-12), 
             color: rgb(0, 0, 0),
             opacity: 0.9,
         });
@@ -705,10 +731,12 @@ onDraw(() => {
 });
 
 
+
+//speech bubble ↵ instruction
 let speechBubbleInstruction = add([
     text("↵", {
-        size: 10, // 48 pixels tall
-        font: "sans-serif", // specify any font you loaded or browser built-in
+        size: 10, 
+        font: "sans-serif",
     }),
     pos(-100, -100),
     anchor("center"),
@@ -717,6 +745,7 @@ let speechBubbleInstruction = add([
     area(),
 ]);
 
+//speech bubble ↵ instruction bubble
 let speechBubbleInstructionBubble = add([
     rect(10, 10, { radius: 8 }),
     pos(-100, -100),
@@ -738,6 +767,8 @@ const speechText = add([
     scale(0.25)
 ]);
 
+
+//function that displays or hides the elements.
 function toggleSpeechBubble() {
     if (speechBubble.pos.x < 0) {
         speechBubble.pos = vec2(200, height()/2-30);
@@ -758,7 +789,15 @@ function toggleSpeechBubble() {
 
 
 
+
+
+
+
+
+
+//-----------------------------------------
 //DIALOGS LEVELID 1
+//-----------------------------------------
 const dialogs2 = [
     "Vous devez agir rapidement! Ambroisie se reproduit à un rythme alarmant.",
     "Si on ne la contrôle pas, la forêt et ses habitants seront en grand danger.",
@@ -767,7 +806,7 @@ const dialogs2 = [
 let curDialog2 = 0;
 
 let speechBubble2 = add([
-    rect(200, 36, { radius: 8 }),  // Adjust the size as needed
+    rect(200, 36, { radius: 8 }),
     pos(-100, -100),
     anchor("center"),
     color(0, 0, 0),
@@ -784,7 +823,7 @@ function drawSpeechBubbleTriangle2() {
             p1: vec2(0, 0),
             p2: vec2(20, 12),
             p3: vec2(17, 0),
-            pos: vec2(250, height()/2-12), // Adjust as necessary
+            pos: vec2(250, height()/2-12),
             color: rgb(0, 0, 0),
             opacity: 0.9,
         });
@@ -830,13 +869,13 @@ const speechText2 = add([
 function toggleSpeechBubble2() {
     if (speechBubble2.pos.x < 0) {
         speechBubble2.pos = vec2(240, height()/2-30);
-        speechText2.pos = vec2(240, height()/2-30);  // Align text with bubble
+        speechText2.pos = vec2(240, height()/2-30); 
         triangleVisible2 = true;;
         speechBubbleInstructionBubble2.pos = vec2(339, height()/2-13);
         speechBubbleInstruction2.pos = vec2(339, height()/2-12);
     } else {
         speechBubble2.pos = vec2(-100, -100);
-        speechText2.pos = vec2(-100, -100);  // Hide text with bubble
+        speechText2.pos = vec2(-100, -100);
         triangleVisible2 = false;
         speechBubbleInstructionBubble2.pos = vec2(-100, -100);
         speechBubbleInstruction2.pos = vec2(-100, -100);
@@ -845,7 +884,7 @@ function toggleSpeechBubble2() {
 
 
 
-
+//exclamation point to catch the eye. Called in level id 0
 function toggleExclamationPoint() {
     if (exclamationPoint.pos.x < 0) {
         exclamationPoint.pos = vec2(240, height()/2);
@@ -856,7 +895,7 @@ function toggleExclamationPoint() {
         exclamationPointShadow.pos = vec2(-100, -100);
     }
 }
-
+//exclamation point to catch the eye. Called in level id 1
 function toggleExclamationPoint2() {
     if (exclamationPoint.pos.x < 0) {
         exclamationPoint.pos = vec2(340, height()/2);
@@ -869,6 +908,8 @@ function toggleExclamationPoint2() {
 }
 
 
+
+//The famous exclamation point
 let exclamationPoint = add([
     text("!", {
         size: 30, 
@@ -900,7 +941,7 @@ let exclamationPointShadow = add([
 
 
 
-
+//exclamation point jump (animation)
 exclamationPoint.onStateEnter("jump", () => {
     if (exclamationPoint.isGrounded()) {
         exclamationPoint.jump(JUMP_FORCE);
@@ -913,17 +954,18 @@ exclamationPoint.onStateEnter("jump", () => {
 
 
 
+//exclamation point move (animation). Called in level id 1.
 exclamationPoint.onStateUpdate("move", () => {
     const dir = vec2(320, height()/2).sub(exclamationPoint.pos).unit();
-    exclamationPoint.move(dir.scale(170));  // Replace 120 with desired speed
+    exclamationPoint.move(dir.scale(170));  
     exclamationPointShadow.move(dir.scale(170)); 
     // Stop moving when close enough to target
     if (exclamationPoint.pos.dist(vec2(320, height()/2)) < 5) {
         
-        exclamationPoint.pos = vec2(320, height()/2);  // Optional: Set exact position
+        exclamationPoint.pos = vec2(320, height()/2);  
         exclamationPoint.enterState("jump");
 
-        exclamationPointShadow.pos = vec2(320, height()/2);  // Optional: Set exact position
+        exclamationPointShadow.pos = vec2(320, height()/2);  
         exclamationPointShadow.enterState("jump");
 
     }
@@ -934,7 +976,14 @@ exclamationPoint.onStateUpdate("move", () => {
 
 
 
+
+
+
+
+
+//-----------------------------------------
 //DIALOGS LEVELID 3
+//-----------------------------------------
 const dialogs3 = [
     "Poursuivez, l'air m'étouffe un peu... Je vais prendre une pause."
 ];
@@ -942,7 +991,7 @@ const dialogs3 = [
 let curDialog3 = 0;
 
 let speechBubble3 = add([
-    rect(200, 36, { radius: 8 }),  // Adjust the size as needed
+    rect(200, 36, { radius: 8 }),  
     pos(-100, -100),
     anchor("center"),
     color(0, 0, 0),
@@ -959,7 +1008,7 @@ function drawSpeechBubbleTriangle3() {
             p1: vec2(-80, 0),
             p2: vec2(-83, 12),
             p3: vec2(-63, 0),
-            pos: vec2(250, height()/2-12), // Adjust as necessary
+            pos: vec2(250, height()/2-12), 
             color: rgb(0, 0, 0),
             opacity: 0.9,
         });
@@ -1005,13 +1054,13 @@ const speechText3 = add([
 function toggleSpeechBubble3() {
     if (speechBubble3.pos.x < 0) {
         speechBubble3.pos = vec2(240, height()/2-30);
-        speechText3.pos = vec2(240, height()/2-30);  // Align text with bubble
+        speechText3.pos = vec2(240, height()/2-30); 
         triangleVisible3 = true;;
         speechBubbleInstructionBubble3.pos = vec2(339, height()/2-13);
         speechBubbleInstruction3.pos = vec2(339, height()/2-12);
     } else {
         speechBubble3.pos = vec2(-100, -100);
-        speechText3.pos = vec2(-100, -100);  // Hide text with bubble
+        speechText3.pos = vec2(-100, -100); 
         triangleVisible3 = false;
         speechBubbleInstructionBubble3.pos = vec2(-100, -100);
         speechBubbleInstruction3.pos = vec2(-100, -100);
@@ -1020,7 +1069,18 @@ function toggleSpeechBubble3() {
 
 
 
+
+
+
+
+
+
+
+
+//-----------------------------------------
 //DIALOGS LEVELID 4
+//-----------------------------------------
+
 const dialogs4 = [
     "Vous l'avez terrassé? Merci beaucoup!!!",
     "En plus d'asphyxier notre forêt, Ambroisie est hautement allergène pour les humains.",
@@ -1031,7 +1091,7 @@ const dialogs4 = [
 let curDialog4 = 0;
 
 let speechBubble4 = add([
-    rect(200, 36, { radius: 8 }),  // Adjust the size as needed
+    rect(200, 36, { radius: 8 }),  
     pos(-100, -100),
     anchor("center"),
     color(0, 0, 0),
@@ -1048,7 +1108,7 @@ function drawSpeechBubbleTriangle4() {
             p1: vec2(-180, 0),
             p2: vec2(-183, 12),
             p3: vec2(-163, 0),
-            pos: vec2(250, height()/2-12), // Adjust as necessary
+            pos: vec2(250, height()/2-12), 
             color: rgb(0, 0, 0),
             opacity: 0.9,
         });
@@ -1097,17 +1157,18 @@ function toggleSpeechBubble4() {
             togglePlatforms()
         }
         speechBubble4.pos = vec2(140, height()/2-30);
-        speechText4.pos = vec2(140, height()/2-30);  // Align text with bubble
+        speechText4.pos = vec2(140, height()/2-30); 
         triangleVisible4 = true;;
         speechBubbleInstructionBubble4.pos = vec2(239, height()/2-13);
         speechBubbleInstruction4.pos = vec2(239, height()/2-12);
     } else {
         speechBubble4.pos = vec2(-100, -100);
-        speechText4.pos = vec2(-100, -100);  // Hide text with bubble
+        speechText4.pos = vec2(-100, -100); 
         triangleVisible4 = false;
         speechBubbleInstructionBubble4.pos = vec2(-100, -100);
         speechBubbleInstruction4.pos = vec2(-100, -100);
-        go("Victoire")
+        
+        
     }
 }
 
@@ -1115,8 +1176,25 @@ function toggleSpeechBubble4() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //--------------------------------------------
-//Ambroisia sounds
+//The text Ambrosia says when she dies
+//-------------------------------------------
 
 const dialogsSound = [
     "Grrrrlgl",
@@ -1127,7 +1205,7 @@ const dialogsSound = [
 let curDialogSound = 0;
 
 let speechBubbleSound = add([
-    rect(100, 20, { radius: 8 }),  // Adjust the size as needed
+    rect(100, 20, { radius: 8 }),  
     pos(-100, -100),
     anchor("center"),
     color(0, 0, 0),
@@ -1144,7 +1222,7 @@ function drawSpeechBubbleTriangleSound() {
             p1: vec2(35, -5),
             p2: vec2(47, 7),
             p3: vec2(44, -5),
-            pos: vec2(width() / 4 * 3-90, height()/2-45), // Adjust as necessary
+            pos: vec2(width() / 4 * 3-90, height()/2-45),
             color: rgb(0, 0, 0),
             opacity: 0.9,
         });
@@ -1169,19 +1247,32 @@ const speechTextSound = add([
 function toggleSpeechBubbleSound() {
     if (speechBubbleSound.pos.x < 0) {
         speechBubbleSound.pos = vec2(width() / 4 * 3-90, height()/2-60);
-        speechTextSound.pos = vec2(width() / 4 * 3-90, height()/2-60);  // Align text with bubble
+        speechTextSound.pos = vec2(width() / 4 * 3-90, height()/2-60);  
         triangleVisibleSound = true;;
 
     } else {
         speechBubbleSound.pos = vec2(-100, -100);
-        speechTextSound.pos = vec2(-100, -100);  // Hide text with bubble
+        speechTextSound.pos = vec2(-100, -100);  
         triangleVisibleSound = false;
     }
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 //--------------------------------------------
-//Ambroisia pause
+//The dialogue of Ambrosia when the menu pause is called. 
+//--------------------------------------------
 
 const dialogsPause = [
     "Qu'est-ce qui se passe ici ?",
@@ -1218,7 +1309,7 @@ const dialogsPause = [
 let curDialogPause = 0;
 
 let speechBubblePause = add([
-    rect(160, 26, { radius: 8 }),  // Adjust the size as needed
+    rect(160, 26, { radius: 8 }),  
     pos(-100, -100),
     anchor("center"),
     color(0, 0, 0),
@@ -1235,7 +1326,7 @@ function drawSpeechBubbleTrianglePause() {
             p1: vec2(35, -5),
             p2: vec2(32, 7),
             p3: vec2(44, -5),
-            pos: vec2(width() / 4 * 3, height()/2-42), // Adjust as necessary
+            pos: vec2(width() / 4 * 3, height()/2-42), 
             color: rgb(0, 0, 0),
             opacity: 0.9,
         });
@@ -1260,12 +1351,12 @@ const speechTextPause = add([
 function toggleSpeechBubblePause() {
     if (level.paused) {
         speechBubblePause.pos = vec2(width() / 4 * 3+30, height()/2-60);
-        speechTextPause.pos = vec2(width() / 4 * 3+30, height()/2-60);  // Align text with bubble
+        speechTextPause.pos = vec2(width() / 4 * 3+30, height()/2-60); 
         triangleVisiblePause = true;;
 
     } else {
         speechBubblePause.pos = vec2(-100, -100);
-        speechTextPause.pos = vec2(-100, -100);  // Hide text with bubble
+        speechTextPause.pos = vec2(-100, -100);  
         triangleVisiblePause = false;
     }
 }
@@ -1273,18 +1364,136 @@ function toggleSpeechBubblePause() {
 
 
 
+//-------------------------------------------
+//The TIMER
+//Initially adapted this code in kaboom : https://codepen.io/ishanbakshi/pen/pgzNMv
+//Ended up scratching it. Too much of a pain to pause when I want.
+//Stumbled into the kaboom playground on audio and doubleJump. Worked from that. 
+//Got help from CHATGPT throughout the entire process as I was losing my mind not understanding what the problem was. 
+//------------------------------------------
+
+function formatTime(secondsTotal) {
+    const minutes = Math.floor(secondsTotal / 60);
+    const seconds = Math.floor(secondsTotal) % 60;
+
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+
+let timerPaused = false;  // A flag to check if timer is paused
+
+const timer = add([
+    pos(width()-50, 10),
+    anchor("center"),
+    text(timeLeft, { size: 16 }),
+]);
+
+onUpdate(() => {
+    if (!level.paused && timerPaused) {  // Only update if the level and timer are both not paused
+        timeLeft -= dt();
+        if (timeLeft < 0) {
+            go("Defaite");
+        }
+        timer.text = formatTime(timeLeft);
+    }
+});
+
+
+//let timerLabel;
+//let timerStopped = false;
+//let clonedTime = null;  // Nouvelle variable pour stocker le temps cloné
+//
+//function initializeTimer(startTime = remainingTime) {
+//    if (timerLabel) {
+//        destroy(timerLabel);
+//    }
+//
+//    timerLabel = add([
+//        text(startTime, { size: 16 }),
+//        pos(width()-50, 10),
+//        anchor("center")
+//    ]);
+//
+//    function startTimer() {
+//        setTimeout(() => {
+//            if (!level.paused && !timerStopped) {
+//                let presentTime = timerLabel.text;
+//                let timeArray = presentTime.split(":");
+//                let m = parseInt(timeArray[0]);
+//                let s = checkSecond(parseInt(timeArray[1]) - 1);
+//                
+//                if (s == 59) {
+//                    m -= 1;
+//                }
+//                
+//                if (m == 0 && s == 0) {
+//                    go("Defaite");
+//                }
+//    
+//                timerLabel.text = (m < 10 ? "0" : "") + m + ":" + s;
+//                remainingTime = timerLabel.text;  // Mettez à jour la variable globale avec la valeur actuelle du timer
+//    
+//                // Si ce n'est pas en pause, continuez à la prochaine itération du timer
+//                startTimer();
+//            }
+//        }, 1000);
+//    }
+//
+//    function checkSecond(sec) {
+//        if (sec < 10 && sec >= 0) {
+//            sec = "0" + sec;
+//        }
+//        if (sec < 0) {
+//            sec = "59";
+//        }
+//        return sec;
+//    }
+//
+//    // Démarrez le timer
+//    startTimer();
+//}
+//
+//// Fonctions pour arrêter et redémarrer le timer
+//
+//function stopTimer() {
+//    timerStopped = true;
+//    clonedTime = timerLabel.text;
+//    localStorage.setItem('clonedTime', clonedTime);
+//}
+//
+//function getClonedTime() {
+//    return localStorage.getItem('clonedTime');
+//}
+//
+//function restartTimer() {
+//    let storedTime = getClonedTime();
+//    timerStopped = false;
+//    if (storedTime) {
+//        initializeTimer(storedTime);
+//    } else {
+//        initializeTimer();
+//    }
+//}
+//
+//
+//// Par exemple, pour arrêter le timer avec la touche "s" :
+//onKeyPress("s", () => {
+//    stopTimer();
+//});
+//
+//// Et pour redémarrer le timer avec "r" :
+//onKeyPress("r", () => {
+//    restartTimer();
+//});
 
 
 
-
-
-
-//width() / 4 * 3, height()-63
+//
 //----------------LEVEL 0----------------------
 //
 
         if (levelId == 0) {
-            
+            timer.hidden = true;
             const hoodedFigure = add([
                 sprite("Hero"),
                 pos(240, height()-64),
@@ -1294,7 +1503,6 @@ function toggleSpeechBubblePause() {
             ]);
             hoodedFigure.flipX = true;
 
-            
 
 
             //let exclamationPoint = add([
@@ -1414,7 +1622,7 @@ wait(0.7, () => {
         
         
         
-//          Ancien fonctionnement de la création du bubble
+//          Ancien fonctionnement de la création du bubble abandonné parce que trop chiant.
 
 
         //const Hero1 = add([
@@ -1522,9 +1730,9 @@ wait(0.7, () => {
 
 
 
-
-        //---------
-        //BOSS ATTACKS FUNCTIONS
+//------------------------------
+//BOSS ATTACKS FUNCTIONS
+//------------------------------
 
 
 
@@ -1542,14 +1750,14 @@ wait(0.7, () => {
 let shouldSpawnParticles = true;
 let spawner;
         function spawnParticlesAt(x, y, duration = 1) {
-            const particleColor = rgb(255, 198, 98); // Set the particle color to rgb(255,198,98)
+            const particleColor = rgb(255, 198, 98); 
         
             // Start the particle spawning loop
             spawner = loop(0.1, () => {
                 if (!shouldSpawnParticles) return;
                 const item = add([
                     pos(x,y),
-                    rect(8, 8), // Create a square of size 8x8 (change as needed)
+                    rect(8, 8), 
                     color(particleColor),
                     anchor("center"),
                     scale(rand(0.5, 1)),
@@ -1568,8 +1776,12 @@ let spawner;
 
 
 
+//--------------------------------
 // BOSS ATTACK : The Flower Pillar 
 //Explanation comes later.
+//--------------------------------
+
+
         function createFlowerPillar() {
             return add([
                 rect(10, 50),
@@ -1600,11 +1812,13 @@ let spawner;
 
 
 
+//----------------------------------------
+// BOSS ATTACK : The Pollen Cannonball
+// Tried using the tween function but got weirdly interesting and frustrating results due to the duration needed.    
+// ended up getting help from ChatGPT for this one. 
+// Asked the code for a circle to travel from a defined point A to the players location.
+//----------------------------------------
 
-    // BOSS ATTACK : The Pollen Cannonball
-    // Tried using the tween function but got weirdly interesting and frustrating results due to the duration needed.    
-    // ended up getting help from ChatGPT for this one. 
-    // Asked the code for a circle to travel from a defined point A to the players location.
         function launchPollenCannonBall() {
             const pointA = vec2(width() / 4 * 3, height() / 2); //Starting point for the launch
             const pointB = player.pos.clone();
@@ -1634,6 +1848,8 @@ let spawner;
         }
 
 
+
+    
     //------------
     //The blue exclamation point to warn of Flower Pillar
     //------------   
@@ -1674,6 +1890,9 @@ let spawner;
             }
         }
         
+
+
+
     //------------
     //The red exclamation point to warn of Leaf Slap
     //------------   
@@ -1686,7 +1905,7 @@ let spawner;
             pos(-1, height()/2),
             z(3),
             area(({ collisionIgnore: ["exclamation","player","hoodedFigure","enemy"] })),
-            color(0, 0, 0),  // blue color
+            color(0, 0, 0),  // red color
             anchor("bot"),
             "warningRED"
         ]);
@@ -1716,26 +1935,31 @@ let spawner;
 
 
 
+
+
+
+
+
 // --- Boss ---
 
-        let BOSS_HEALTH = 100
-        let isBossAlive = true;
-        let boss;
-        let flowerPillar;
-        let flowerPillar2;
-        let flowerPillar3;
-        let isBossInvulnerable;
-        //let flowerPillarLoop;
-        //let PollenCannonBallLoop;
-        //let leafSlapLoop;
+let BOSS_HEALTH = 100
+let isBossAlive = true;
+let boss;
+let flowerPillar;
+let flowerPillar2;
+let flowerPillar3;
+let isBossInvulnerable;
 
-
-
-
-
+//let flowerPillarLoop;
+//let PollenCannonBallLoop;
+//let leafSlapLoop;
 
 
 let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent spammer la touche escape pour sortir des sentiers battus. Bonjour, je suis le speedrunner.
+
+
+
+
 
 
 
@@ -1745,6 +1969,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
 
         if (levelId == 1 ) {
+            timer.hidden = true;
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
                 area(),
@@ -1824,22 +2049,26 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 anchor("bot"),
                 area({ collisionIgnore: ["player","bullet","InvisibleWall"] }),
                 body(),
-                state("idle"),  // Using a state machine
+                state("idle"),  
                 "hoodedFigure"
             ]);
             hoodedFigure.flipX = false;
             
-            //-----------------
+
+
+
+
+            //-----------------Cinematic movement----------------------------------
             //The following parts are heavily inspired by Kaboom's playground on AI.
             
             hoodedFigure.onStateUpdate("move", () => {
                 const dir = vec2(340, height()-64).sub(hoodedFigure.pos).unit();
-                hoodedFigure.move(dir.scale(170));  // Replace 120 with desired speed
+                hoodedFigure.move(dir.scale(170)); 
             
                 // Stop moving when close enough to target
                 if (hoodedFigure.pos.dist(vec2(340, height()-64)) < 5) {
                     
-                    hoodedFigure.pos = vec2(340, height()-64);  // Optional: Set exact position
+                    hoodedFigure.pos = vec2(340, height()-64);  
                     hoodedFigure.enterState("jump");
                 }
             });
@@ -1847,7 +2076,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             hoodedFigure.onStateEnter("jump", () => {
                 if (hoodedFigure.isGrounded()) {
                     hoodedFigure.jump(JUMP_FORCE);
-                    hoodedFigure.enterState("move2");  // Return to "idle" state after the jump
+                    hoodedFigure.enterState("move2");  //goes to move2 state after the jump
                     toggleExclamationPoint2();
                     wait(0.3, () => {
                         toggleExclamationPoint2();
@@ -1857,12 +2086,12 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             hoodedFigure.onStateUpdate("move2", () => {
                 const dir = vec2(320, height()-64).sub(hoodedFigure.pos).unit();
-                hoodedFigure.move(dir.scale(170));  // Replace 120 with desired speed
+                hoodedFigure.move(dir.scale(170));  
                 exclamationPoint.enterState("move");
                 // Stop moving when close enough to target
                 if (hoodedFigure.pos.dist(vec2(320, height()-64)) < 5) {
                     
-                    hoodedFigure.pos = vec2(320, height()-64);  // Optional: Set exact position
+                    hoodedFigure.pos = vec2(320, height()-64);  
                     hoodedFigure.enterState("jump");
                     wait(0.5, () => {
                         hoodedFigure.flipX = true;
@@ -1873,17 +2102,19 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             hoodedFigure.onStateUpdate("move3", () => {
                 const dir = vec2(280, height()-64).sub(hoodedFigure.pos).unit();
-                hoodedFigure.move(dir.scale(170));  // Replace 120 with desired speed
+                hoodedFigure.move(dir.scale(170));  
             
-                // Stop moving when close enough to target
+               
                 if (hoodedFigure.pos.dist(vec2(280, height()-64)) < 5) {
                     
-                    hoodedFigure.pos = vec2(280, height()-64);  // Optional: Set exact position
+                    hoodedFigure.pos = vec2(280, height()-64);  
                     hoodedFigure.enterState("idle");
                     canMove = false;
                     toggleSpeechBubble2();
                     isDialogueActive = true;
                     cinematic=false;
+                    
+
                 }
             });
             
@@ -1892,19 +2123,25 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
 
 
-
+            //------------------------------------
             // BOSS ATTACK : The Flower Pillar
             //The logic here is to create the object offscreen and move it every three seconds. 
             //This logic comes from discussing the best way to approach this attack pattern with CHATGPT. 
             //Doing this this way, there is no need to constantly create and destroy objects. Thus, allowing for a better management of the allocated ram. Improving performance. 
+            //------------------------------------
+
 
             flowerPillar = createFlowerPillar();
             flowerPillar2 = createFlowerPillar();
             flowerPillar3 = createFlowerPillar();
             
 
+
+            //----------------------------
             // BOSS ATTACK : The Leaf Slap
             //The logic is exactly the same as the Flower Pillars
+            //Not useful in this level but we never know
+            //----------------------------
 
             let leafSlap = add([
                 rect(width()/1.5, 50),
@@ -1930,7 +2167,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             }
 
 
-
+            //initializeTimer()
 // ---------------------
 // ATTACK PATTERN BOSS 1
 // For this, I wrote the structure myself and worked with CHATGPT to keep the syntax correct 
@@ -2043,10 +2280,14 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     });
                 });
             }
-            
+
             //Prevents any action from the player when arriving in a boss battle.
             canMove=false
             wait(2, () => {
+                timerPaused = !timerPaused;
+                wait(0.1, () => {
+                    timer.hidden = false;
+                    })
                 canMove = true;
                 //Don't know why but this is necessary to be repeated each time, otherwise, the animation isn't played. 
                 ["left", "right", "up", "down"].forEach((key) => {
@@ -2063,7 +2304,8 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
-                isBossAlive = false
+                isBossAlive = false;
+                timerPaused = false;
                 cinematic = true;
                 SpeechBubbleSoundProgression() 
                 //These lines pauses the player when the enemy dies. 
@@ -2083,7 +2325,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
                 const targetPos = vec2(240, height()-64);
                 const moveDirection = targetPos.sub(hoodedFigure.pos).unit();
-                const moveSpeed = 100; // Adjust the speed as necessary
+                const moveSpeed = 100; 
 
                 
 
@@ -2108,7 +2350,14 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
 
 
+
+
+
+//----------------LEVEL 2----------------------
+
+
         if (levelId == 2 ) {
+            timer.hidden = true;
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
                 area(),
@@ -2190,41 +2439,46 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 anchor("bot"),
                 area({ collisionIgnore: ["player","bullet","InvisibleWall"] }),
                 body(),
-                state("idle"),  // Using a state machine
+                state("idle"),  
                 "hoodedFigure"
             ]);
             hoodedFigure.flipX = false;
+            
+
             
             //-----------------
             //The following parts are heavily inspired by Kaboom's playground on AI.
             
             hoodedFigure.onStateUpdate("move", () => {
                 const dir = vec2(width(), height()-64).sub(hoodedFigure.pos).unit();
-                hoodedFigure.move(dir.scale(220));  // Replace 120 with desired speed
+                hoodedFigure.move(dir.scale(220));  
             
                 // Stop moving when close enough to target
                 if (hoodedFigure.pos.dist(vec2(width(), height()-64)) < 5) {
                     
-                    hoodedFigure.pos = vec2(width(), height()-64);  // Optional: Set exact position
+                    hoodedFigure.pos = vec2(width(), height()-64);  
                     hoodedFigure.enterState("idle");
                     cinematic=false;
                 }
             });
 
+            //-------------------------------------
             // BOSS ATTACK : The Flower Pillar
             //The logic here is to create the object offscreen and move it every three seconds. 
             //This logic comes from discussing the best way to approach this attack pattern with CHATGPT. 
             //Doing this this way, there is no need to constantly create and destroy objects. Thus, allowing for a better management of the allocated ram. Improving performance. 
+            //-------------------------------------
 
             flowerPillar = createFlowerPillar();
             flowerPillar2 = createFlowerPillar();
             flowerPillar3 = createFlowerPillar();
             
 
-
+            //-------------------------------------
             // BOSS ATTACK : The Leaf Slap
             //The logic is exactly the same as the Flower Pillars
-
+            //-------------------------------------
+            
             let leafSlap = add([
                 rect(width()/1.5, 50),
                 pos(vec2(-100, -100)),
@@ -2248,7 +2502,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
 
 
-
+            //initializeTimer(),
 
             function bossAttackPattern() {
                 if (!isBossAlive) return;
@@ -2355,9 +2609,14 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     });
                 });
             }
-
+ 
+            //Prevents any action from the player when arriving in a boss battle.
             canMove=false
             wait(2, () => {
+                timerPaused = !timerPaused;
+                wait(0.1, () => {
+                    timer.hidden = false;
+                    })
                 canMove = true;
                 //Don't know why but this is necessary to be repeated each time, otherwise, the animation isn't played. 
                 ["left", "right", "up", "down"].forEach((key) => {
@@ -2374,6 +2633,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
+                timerPaused = false;
                 isBossAlive = false
                 cinematic=true;
                 SpeechBubbleSoundProgression() 
@@ -2384,6 +2644,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     destroy(enemy)
                     hoodedFigure.enterState("move");
                     wait(1, () => {
+                        timerPaused = true;
                         canMove = true;
                     })
                 })
@@ -2405,6 +2666,8 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
         //----------------LEVEL 3----------------------
 
         if (levelId == 3 ) {
+            //initializeTimer()
+            timer.hidden = true;
             canMove = false;
             spawnParticlesAt(width(), height()-63);
             const hoodedFigure = add([
@@ -2413,20 +2676,22 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 anchor("bot"),
                 area({ collisionIgnore: ["player","bullet","InvisibleWall","particle"] }),
                 body(),
-                state("idle"),  // Using a state machine
+                state("idle"), 
                 "hoodedFigure"
             ]);
             hoodedFigure.flipX = false;
 
             toggleSpeechBubble3();
             isDialogueActive = true;
-
+            
 
         }
+
         //----------------LEVEL 4----------------------
 
         let BOSS_HEALTH_FINAL = 800
         if (levelId == 4 ) {
+            timer.hidden = true;
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
                 area(),
@@ -2502,7 +2767,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 anchor("bot"),
                 area({ collisionIgnore: ["player","bullet","InvisibleWall"] }),
                 body(),
-                state("idle"),  // Using a state machine
+                state("idle"),  
                 "hoodedFigure"
             ]);
             hoodedFigure.flipX = false;
@@ -2512,12 +2777,12 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             hoodedFigure.onStateUpdate("move", () => {
                 const dir = vec2(50, height()-64).sub(hoodedFigure.pos).unit();
-                hoodedFigure.move(dir.scale(100));  // Replace 120 with desired speed
+                hoodedFigure.move(dir.scale(100));  
             
                 // Stop moving when close enough to target
                 if (hoodedFigure.pos.dist(vec2(50, height()-64)) < 5) {
                     
-                    hoodedFigure.pos = vec2(50, height()-64);  // Optional: Set exact position
+                    hoodedFigure.pos = vec2(50, height()-64);  
                     hoodedFigure.enterState("idle");
                     canMove = false;
                     isDialogueActive = true;
@@ -2526,10 +2791,13 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 }
             });
 
+            //-------------------------------------
             //PLATFORM MECANICS
             //The basis of the logic is the same as LeafSlap and FlowerPillar
             //However, ended up changing it to a function that creates and the function destroy.Moving the object out of the playable area seemed to teleport the player sometimes. 
             //Hidding also wasn't effective. The attributes where still very much there making it so the player collided on invisible platforms. 
+            //-------------------------------------
+
             function createPlatform(x, y) {
                 return add([
                     sprite("sol1"),
@@ -2572,19 +2840,22 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 }
             }
     
+            //-------------------------------------
             // BOSS ATTACK : The Flower Pillar
             //The logic here is to create the object offscreen and move it every three seconds. 
             //This logic comes from discussing the best way to approach this attack pattern with CHATGPT. 
             //Doing this this way, there is no need to constantly create and destroy objects. Thus, allowing for a better management of the allocated ram. Improving performance. 
+            //-------------------------------------
 
             flowerPillar = createFlowerPillar();
             flowerPillar2 = createFlowerPillar();
             flowerPillar3 = createFlowerPillar();
             
 
-
+            //-------------------------------------
             // BOSS ATTACK : The Leaf Slap
             //The logic is exactly the same as the Flower Pillars
+            //-------------------------------------
 
             let leafSlap = add([
                 rect(width()/1.5, 50),
@@ -2608,7 +2879,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             }
 
 
-
+            //initializeTimer()
 
 
 
@@ -2616,6 +2887,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 // ATTACK PATTERN BOSS 3
 // For this, I wrote the structure myself and worked with CHATGPT to keep the syntax correct 
 // ---------------------
+
             function bossAttackPattern() {
                 if (!isBossAlive) return;
                 isBossInvulnerable = false;
@@ -2944,9 +3216,14 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     });
                 });
             }
-            
+             
+            //Prevents any action from the player when arriving in a boss battle.
             canMove=false
             wait(2, () => {
+                timerPaused = !timerPaused;
+                wait(0.1, () => {
+                timer.hidden = false;
+                })
                 canMove = true;
                 //Don't know why but this is necessary to be repeated each time, otherwise, the animation isn't played. 
                 ["left", "right", "up", "down"].forEach((key) => {
@@ -2963,8 +3240,10 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
+                timerPaused = false;
                 isBossAlive = false
                 cinematic=true;
+                isDialogueActive =true;
                 SpeechBubbleSoundProgression() 
                 wait(1.5, () => {
                     canMove=false
@@ -3171,6 +3450,10 @@ onKeyPress("escape", () => {
             SpeechBubblePauseProgression();
             if (cinematic===false)
                 canMove = !isDialogueActive;
+            if (!isDialogueActive && !cinematic) {
+                //initializeTimer()
+                timerPaused = true;
+            }
             //if (levelId == 1) {
             //    
             //    boss.paused = false;
