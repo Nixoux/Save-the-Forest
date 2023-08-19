@@ -1,7 +1,7 @@
 <!--- Le README de votre Github doit documenter le contexte de votre développement en mentionnant, dans l’ordre suivant
 une brève description (en français ou en anglais) de votre rendu et de ses fonctionnalités --->
 ## Save The Forest 
-<img width="768" alt="image" src="https://github.com/Nixoux/Save-the-Forest/blob/main/assets/Title.png"> 
+<!--- <img width="768" alt="image" src="https://github.com/glitch1312/Fix-It/assets/96738339/fd947a11-68b2-48e4-8a66-aac71b826d6a"> --->
 
 
 "Save The Forest" est un petit jeu en pixel 2D écrit en Kaboom.js sur le danger des plantes invasives dans les forêts. Plongez dans un univers enchanté où chaque arbre, chaque plante et chaque créature compte pour l'équilibre de la nature. Incarnez une jeune sorcière en quête de préserver l'harmonie de sa forêt face à une menace sourde mais destructrice : L'ambroisie.
@@ -11,7 +11,7 @@ La forêt, autrefois un sanctuaire de paix et de biodiversité, est aujourd'hui 
 
 
 <!---#au moins une capture illustrant votre travail ; attention, pour la VR, un GIF est requis --->
-<img width="769" alt="image" src="https://github.com/Nixoux/Save-the-Forest/blob/main/assets/GameImage.png>
+<img width="769" alt="image" src="https://github.com/Nixoux/Save-the-Forest/blob/main/assets/GameImage.png">
 
 <!---la procédure d’installation / de lancement --->
 # Lancement
