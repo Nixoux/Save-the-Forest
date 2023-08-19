@@ -1,6 +1,7 @@
 kaboom({
     scale:3.5,
     background:[0,0,0],
+    backgroundAudio: true,
     width: 448,
     height: 210,
 });
@@ -16,6 +17,86 @@ loadSpriteAtlas("Sprites/sol2.png", "Sprites/sol2.json");
 loadSpriteAtlas("Sprites/Hero.png", "Sprites/Hero.json");
 
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
+
+
+loadSound("Ambient2", "Music/Ambient 2.mp3")
+loadSound("Ambient3", "Music/Ambient 3.mp3")
+loadSound("Ambient9", "Music/Ambient 9.mp3")
+loadSound("Action1", "Music/Action 1.mp3")
+loadSound("Action2", "Music/Action 2.mp3")
+loadSound("Action3", "Music/Action 3.mp3")
+loadSound("Action4", "Music/Action 4.mp3")
+loadSound("Fx2", "Music/Fx 2.mp3")
+
+const music = play("Ambient2", {
+	loop: true,
+    paused: false,
+    
+})
+
+const fightMusic1 = play("Action1", {
+	loop: false,
+    paused: true,
+    
+})
+
+const fightMusic2 = play("Action2", {
+	loop: false,
+    paused: true,
+    
+})
+const fightMusic3 = play("Action3", {
+	loop: false,
+    paused: true,
+    
+})
+const fightMusic4 = play("Action4", {
+	loop: false,
+    paused: true,
+    
+})
+
+fightMusic1.onEnd(() =>{
+    fightMusic2.seek(0);
+    fightMusic2.paused = false;
+})
+
+fightMusic2.onEnd(() =>{
+    fightMusic3.seek(0);
+    fightMusic3.paused = false;
+})
+fightMusic3.onEnd(() =>{
+    fightMusic4.seek(0);
+    fightMusic4.paused = false;
+})
+fightMusic4.onEnd(() =>{
+    fightMusic1.seek(0);
+    fightMusic1.paused = false;
+})
+
+
+
+const musicPause = play("Ambient9", {
+	loop: true,
+    paused: true,
+    
+})
+
+const musicFin = play("Ambient3", {
+	loop: true,
+    paused: true,
+    
+})
+
+const musicDefaite = play("Fx2", {
+	loop: false,
+    paused: true,
+    
+})
+
+volume(0.2)
+
+
 
 const JUMP_FORCE = 600
 const SPEED = 200;
@@ -141,8 +222,70 @@ scene("accueil", () => {
             pos(center().x +2, center().y - 50)
     
     ]);
+    const InstruRec = add([
+        rect(103, 78, { radius: 4 }),
+        pos(center().x+115, center().y-25),
+        color(255,255,255),
+        anchor("topleft"),
+        fixed(),
+        z(2),
+        outline(3),
+        opacity(0.3)
+    ]);
 
+    const Instruction1 = add([
+        text("Attaquer :  ⎵ ", {
+            size: 40,
+            align: "left",
+            
+        }), 
+        color(0, 0, 0),
+        z(3),
+        anchor("left"),
+        pos(center().x+120, center().y -15),
+        scale(0.3),
 
+        opacity(0.9)
+    ]);
+    const Instruction2 = add([
+        text("Bouger   : ←↑→", {
+            size: 40,
+            align: "left",
+
+            
+        }), 
+        color(0, 0, 0),
+        z(3),
+        anchor("left"),
+        pos(center().x+120, center().y +5),
+        scale(0.3)
+    ]);
+    const Instruction3 = add([
+        text("Pause    : ESC", {
+            size: 40,
+            align: "left",
+
+            
+        }), 
+        color(0, 0, 0),
+        z(3),
+        anchor("left"),
+        pos(center().x+120, center().y + 25),
+        scale(0.3)
+    ]);
+    const Instruction4 = add([
+        text("Valider  :  ↵ ", {
+            size: 40,
+            align: "left",
+
+            
+        }), 
+        color(0, 0, 0),
+        z(3),
+        anchor("left"),
+        pos(center().x+120, center().y + 45), 
+        scale(0.3)
+    ]);
 
     //const ProtoRec = add([
     //    rect(width()/1.2, height()/2, { radius: 4 }),
@@ -687,7 +830,6 @@ function SpeechBubblePauseProgression() {
 
 function FightCountdownProgression() {
     // If the game is paused, do nothing
-    if (level.paused) return;
 
     if (levelId === 1 || levelId === 2 || levelId === 4) {
         // Update the fight count text to the current value
@@ -916,7 +1058,7 @@ function toggleExclamationPoint() {
         exclamationPointShadow .pos = vec2(242, height()/2);
         exclamationPoint.enterState("jump");
     } else {
-        exclamationPoint.pos = vec2(-1, height()/2);
+        exclamationPoint.pos = vec2(-1, -100);
         exclamationPointShadow.pos = vec2(-100, -100);
     }
 }
@@ -940,7 +1082,7 @@ let exclamationPoint = add([
         size: 30, 
         font: "sans-serif", 
     }),
-    pos(-1, height()/2),
+    pos(-1, height()/2-5),
     anchor("center"),
     color(255, 255, 255),
     z(3),
@@ -1424,7 +1566,7 @@ onUpdate(() => {
         //    destroyBackground3 = true;
         //}
         if (timeLeft < 0) {
-            go("Defaite");
+            go("DefaiteTimer");
         }
         timer.text = formatTime(timeLeft);
     }
@@ -1669,6 +1811,9 @@ function togglefightCount() {
         if (levelId == 0) {
             borderIn()
             
+            music.paused = true; // Stop the Ambient2 music
+		    fightMusic1.paused = false; // Start the Level1Music
+
             timer.hidden = true;
             const hoodedFigure = add([
                 sprite("Hero"),
@@ -2856,10 +3001,11 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 timerPaused = false;
                 isBossAlive = false
                 cinematic=true;
+                borderIn()
                 SpeechBubbleSoundProgression() 
                 wait(0.5, () => {
-                    canMove=false,
-                    borderIn()
+                    canMove=false
+                    
                 })
                 wait(3, () => {
                     destroy(enemy)
@@ -3533,6 +3679,39 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
+                if (!fightMusic1.paused) {
+                    fightMusic2wasPlaying = false;
+                    fightMusic3wasPlaying = false;
+                    fightMusic4wasPlaying = false;
+                    fightMusic1.paused = true;
+                    console.log("fightMusic1 is currently playing");
+                    fightMusic1wasPlaying = true;
+                } 
+                if (!fightMusic2.paused) {
+                    fightMusic1wasPlaying = false;
+                    fightMusic3wasPlaying = false;
+                    fightMusic4wasPlaying = false;
+                    fightMusic2.paused = true;
+                    console.log("fightMusic2 is currently playing");
+                    fightMusic2wasPlaying = true;
+                } 
+                if (!fightMusic3.paused) {
+                    fightMusic1wasPlaying = false;
+                    fightMusic2wasPlaying = false;
+                    fightMusic4wasPlaying = false;
+                    console.log("fightMusic3 is currently playing");
+                    fightMusic3.paused = true;
+                    fightMusic3wasPlaying = true;
+                }
+                if (!fightMusic4.paused) {
+                    fightMusic1wasPlaying = false;
+                    fightMusic2wasPlaying = false;
+                    fightMusic3wasPlaying = false;
+                    console.log("fightMusic4 is currently playing");
+                    fightMusic4.paused = true;
+                    fightMusic4wasPlaying = true;
+                }
+                musicFin.paused = false;
                 borderIn(),
                 timerPaused = false;
                 isBossAlive = false
@@ -3700,6 +3879,11 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
 // --- Menu Pause --- 
 //                      Vient principalement du playground kaboom modifié à ma convenance - Ajouter les éléments en mouvement si besoin.
+let fightMusic1wasPlaying = false;
+let fightMusic2wasPlaying = false;
+let fightMusic3wasPlaying = false;
+let fightMusic4wasPlaying = false;
+
 
 let curTween = null;
 let bullet = 1; // Valeur nécessaire pour ne pas que ça plante quand on pause avant d'avoir tiré une fois.
@@ -3732,6 +3916,41 @@ onKeyPress("escape", () => {
         //    boss.paused = true;
 
         //}
+        musicPause.seek(3.5);
+        musicPause.paused = false;
+        if (!fightMusic1.paused) {
+            fightMusic2wasPlaying = false;
+            fightMusic3wasPlaying = false;
+            fightMusic4wasPlaying = false;
+            fightMusic1.paused = true;
+            console.log("fightMusic1 is currently playing");
+            fightMusic1wasPlaying = true;
+        } 
+        if (!fightMusic2.paused) {
+            fightMusic1wasPlaying = false;
+            fightMusic3wasPlaying = false;
+            fightMusic4wasPlaying = false;
+            fightMusic2.paused = true;
+            console.log("fightMusic2 is currently playing");
+            fightMusic2wasPlaying = true;
+        } 
+        if (!fightMusic3.paused) {
+            fightMusic1wasPlaying = false;
+            fightMusic2wasPlaying = false;
+            fightMusic4wasPlaying = false;
+            console.log("fightMusic3 is currently playing");
+            fightMusic3.paused = true;
+            fightMusic3wasPlaying = true;
+        }
+        if (!fightMusic4.paused) {
+            fightMusic1wasPlaying = false;
+            fightMusic2wasPlaying = false;
+            fightMusic3wasPlaying = false;
+            console.log("fightMusic4 is currently playing");
+            fightMusic4.paused = true;
+            fightMusic4wasPlaying = true;
+        }
+
     } else {
         curTween.onEnd(() => {
             pauseMenu.hidden = true;
@@ -3751,8 +3970,40 @@ onKeyPress("escape", () => {
             //if (levelId == 1) {
             //    
             //    boss.paused = false;
-
+            musicPause.paused = true;
             //}
+            if (fightMusic1wasPlaying) {
+                fightMusic2wasPlaying = false;
+                fightMusic3wasPlaying = false;
+                fightMusic4wasPlaying = false;
+                fightMusic1.paused = false;
+                console.log("fightMusic1 is currently replaying");
+                fightMusic1wasPlaying = false;
+            } 
+            if (fightMusic2wasPlaying) {
+                fightMusic1wasPlaying = false;
+                fightMusic3wasPlaying = false;
+                fightMusic4wasPlaying = false;
+                fightMusic2.paused = false;
+                console.log("fightMusic2 is currently playing");
+                fightMusic2wasPlaying = false;
+            } 
+            if (fightMusic3wasPlaying) {
+                fightMusic1wasPlaying = false;
+                fightMusic2wasPlaying = false;
+                fightMusic4wasPlaying = false;
+                console.log("fightMusic3 is currently playing");
+                fightMusic3.paused = false;
+                fightMusic3wasPlaying = false;
+            }
+            if (fightMusic4wasPlaying) {
+                fightMusic1wasPlaying = false;
+                fightMusic2wasPlaying = false;
+                fightMusic3wasPlaying = false;
+                console.log("fightMusic4 is currently playing");
+                fightMusic4.paused = false;
+                fightMusic4wasPlaying = false;
+            }
         });
     }
 });
@@ -3825,7 +4076,41 @@ pauseMenu.paused = true;
 // --- Scène de fin | Défaite ---
 
         scene("Defaite", () => {
+            if (!fightMusic1.paused) {
+                fightMusic2wasPlaying = false;
+                fightMusic3wasPlaying = false;
+                fightMusic4wasPlaying = false;
+                fightMusic1.paused = true;
+                console.log("fightMusic1 is currently playing");
+                fightMusic1wasPlaying = true;
+            } 
+            if (!fightMusic2.paused) {
+                fightMusic1wasPlaying = false;
+                fightMusic3wasPlaying = false;
+                fightMusic4wasPlaying = false;
+                fightMusic2.paused = true;
+                console.log("fightMusic2 is currently playing");
+                fightMusic2wasPlaying = true;
+            } 
+            if (!fightMusic3.paused) {
+                fightMusic1wasPlaying = false;
+                fightMusic2wasPlaying = false;
+                fightMusic4wasPlaying = false;
+                console.log("fightMusic3 is currently playing");
+                fightMusic3.paused = true;
+                fightMusic3wasPlaying = true;
+            }
+            if (!fightMusic4.paused) {
+                fightMusic1wasPlaying = false;
+                fightMusic2wasPlaying = false;
+                fightMusic3wasPlaying = false;
+                console.log("fightMusic4 is currently playing");
+                fightMusic4.paused = true;
+                fightMusic4wasPlaying = true;
+            }
 
+
+            musicDefaite.paused = false;
             // Texte d'accueil
             const TitreDeDefaite = add([
                 text("Défaite", {
@@ -3891,6 +4176,106 @@ pauseMenu.paused = true;
 
 
 
+// --- Scène de fin | Défaite Timer ---
+
+scene("DefaiteTimer", () => {
+    if (!fightMusic1.paused) {
+        fightMusic2wasPlaying = false;
+        fightMusic3wasPlaying = false;
+        fightMusic4wasPlaying = false;
+        fightMusic1.paused = true;
+        console.log("fightMusic1 is currently playing");
+        fightMusic1wasPlaying = true;
+    } 
+    if (!fightMusic2.paused) {
+        fightMusic1wasPlaying = false;
+        fightMusic3wasPlaying = false;
+        fightMusic4wasPlaying = false;
+        fightMusic2.paused = true;
+        console.log("fightMusic2 is currently playing");
+        fightMusic2wasPlaying = true;
+    } 
+    if (!fightMusic3.paused) {
+        fightMusic1wasPlaying = false;
+        fightMusic2wasPlaying = false;
+        fightMusic4wasPlaying = false;
+        console.log("fightMusic3 is currently playing");
+        fightMusic3.paused = true;
+        fightMusic3wasPlaying = true;
+    }
+    if (!fightMusic4.paused) {
+        fightMusic1wasPlaying = false;
+        fightMusic2wasPlaying = false;
+        fightMusic3wasPlaying = false;
+        console.log("fightMusic4 is currently playing");
+        fightMusic4.paused = true;
+        fightMusic4wasPlaying = true;
+    }
+
+
+    musicDefaite.paused = false;
+    // Texte d'accueil
+    const TitreDeDefaite = add([
+        text("Défaite", {
+            size: 30,
+            align: "center",
+            font: "alagard",
+        }), 
+        
+        anchor("center"),
+        pos(center().x, center().y - 52)
+
+    ]);
+    const ligne = add([
+        rect(112, 1),
+        anchor("center"),
+        pos(center().x, center().y - 40) 
+        
+    ])
+
+    const DefaiteWitch = add([
+        sprite("Witch",{ anims: { idle: 0, run: [1, 2] } }),
+        pos(center().x - 32, center().y + 43) ,
+        anchor("center"), 
+        color(hsl2rgb(0.55, 0.9, 0.6))
+    ]);
+    DefaiteWitch.play("idle",{ speed: 3})
+
+    const TextDefaite = add([
+        text("Malheureusement, Ambroisie a eu raison de la forêt", {
+            size: 15,
+            align: "center",
+            font: "alagard",
+        }), 
+        
+        anchor("center"),
+        pos(center().x, center().y - 22)
+
+    ]);
+    
+    const instru = add([
+        text("Appuie sur [wavy]ENTER[/wavy] pour recommencer!", {
+            size: 15,
+            align: "center",
+            font: "alagard",
+            styles: {
+                "wavy": (idx, ch) => ({
+                    color: rgb(24, 53, 103),
+                    pos: vec2(0, wave(-2, 2, time() * 2 + idx * 0.3)), //prise du Kaboom playground et adapté à mes envies.
+                }),
+            }
+
+        }),
+        anchor("center"),
+        pos(center().x, center().y + 68)
+
+    ]);
+    // Interaction avec ENTER
+    onKeyPress("enter", () => {
+        location.reload();
+
+    })
+});
 
 
 
