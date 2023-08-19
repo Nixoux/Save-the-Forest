@@ -6,6 +6,9 @@ kaboom({
     height: 210,
 });
 
+
+
+//LOAD DE CHAQUE SPRITE.
 loadSpriteAtlas("Sprites/TilesetGround.png", "Sprites/TilesetGround.json");
 loadSpriteAtlas("Sprites/WitchAnims.png", "Sprites/WitchAnims.json");
 loadSpriteAtlas("Sprites/AmbroisieIdle.png", "Sprites/AmbroisieIdle.json");
@@ -16,9 +19,13 @@ loadSpriteAtlas("Sprites/sol1.png", "Sprites/sol1.json");
 loadSpriteAtlas("Sprites/sol2.png", "Sprites/sol2.json");
 loadSpriteAtlas("Sprites/Hero.png", "Sprites/Hero.json");
 
+
+
+//LOAD DE FONT
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
 
 
+//LOAD DE CHAQUE MUSIQUE.
 loadSound("Ambient2", "Music/Ambient 2.mp3")
 loadSound("Ambient3", "Music/Ambient 3.mp3")
 loadSound("Ambient9", "Music/Ambient 9.mp3")
@@ -29,7 +36,7 @@ loadSound("Action4", "Music/Action 4.mp3")
 loadSound("Fx2", "Music/Fx 2.mp3")
 
 
-
+//LOAD DE CHAQUE EFFET SONORE.
 loadSound("PauseClackClunk", "SoundEffects/PauseClackClunk.wav")
 loadSound("Catchball", "SoundEffects/catch ball 1.wav")
 loadSound("HitDamage", "SoundEffects/Hit damage 1.wav")
@@ -45,6 +52,9 @@ loadSound("StepSound", "SoundEffects/footstep grass and leaves 1.wav")
 
 loadSound("CapeSound", "SoundEffects/swoosh 1.wav")
 
+
+
+//Sound the character makes when going forward
 const CapeSound = play("CapeSound", {
 	loop: true,
     paused: true,
@@ -53,13 +63,14 @@ const CapeSound = play("CapeSound", {
 })
 
 
-
+//Music Title Screen
 const music = play("Ambient2", {
 	loop: true,
     paused: false,
     
 })
 
+//Cycle of action music 
 const fightMusic1 = play("Action1", {
 	loop: false,
     paused: true,
@@ -101,29 +112,32 @@ fightMusic4.onEnd(() =>{
 })
 
 
-
+//MUSIC WHEN PAUSED
 const musicPause = play("Ambient9", {
 	loop: true,
     paused: true,
     
 })
 
+//MUSIC WHEN LAST BOSS IS BEATEN
 const musicFin = play("Ambient3", {
 	loop: true,
     paused: true,
     
 })
 
+//MUSIC/FX WHEN THE PLAYER LOSES
 const musicDefaite = play("Fx2", {
 	loop: false,
     paused: true,
     
 })
 
+//GENERAL VOLUME
 volume(0.5)
 
 
-
+//SOUND WHEN HOODED FIGURE WALKS
 const StepSound = play("StepSound", {
 	loop: true,
     paused: true,
@@ -258,6 +272,15 @@ scene("accueil", () => {
             pos(center().x +2, center().y - 50)
     
     ]);
+    
+    
+    
+    //COMMAND INSTRUCTIONS
+    
+    
+    
+    
+    
     const InstruRec = add([
         rect(103, 78, { radius: 4 }),
         pos(center().x+115, center().y-25),
@@ -1813,8 +1836,9 @@ onUpdate(() => {
     }
 
 
-
-//The countdown
+//-----------------------------
+//The countdown before a fight
+//-----------------------------
 
 const fightCount = [
     "3",
@@ -2080,6 +2104,7 @@ wait(0.7, () => {
 
 
 
+        //FUNCTIONS RELATED TO MOVING THE PLATFORMS | CALLED IN LEVELID 4
 
         function movePlatforms() {
             for (let p of platforms) {
@@ -3458,6 +3483,7 @@ function bossAttackPattern() {
 // ---------------------
 // ATTACK PATTERN BOSS 3
 // For this, I wrote the structure myself and worked with CHATGPT to keep the syntax correct 
+//Cutting it into parts was easier to work with and edit.
 // ---------------------
 
             function bossAttackPattern() {
@@ -3882,6 +3908,7 @@ function bossAttackPattern() {
             
             //All the things happening when Ambroisia dies. 
             on("death", "enemy", (enemy) => {
+                //CHECKS WHICH MUSIC WAS PLAYING TO PAUSE THEM, TO THEN CALL THE musicFin
                 if (!fightMusic1.paused) {
                     fightMusic2wasPlaying = false;
                     fightMusic3wasPlaying = false;
