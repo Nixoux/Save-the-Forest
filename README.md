@@ -38,7 +38,6 @@ Sound effects:  JDWasabi & FilmCow
 Ce jeu s'inscrit dans le cadre du cours dispensé par Isaac pante, *Dévelopement de Jeux Video 2D*, effectué en printemps 2023. (SLI, Lettres, UNIL).
 
 <!---Les limites de votre travail ainsi que les possibilités d’amélioration doivent apparaître comme « issues », assorties des étiquettes adéquates (bug, enhancement, etc.) et non dans le Readme. Gardez à l’esprit que cette description est destinée à d’autres personnes intéressées par votre code. --->
-Les améliorations et les problèmes sont descrits dans la partie "Issues" du répertoire. 
 
 <!---Votre répertoire Github doit porter un nom qui facilite l'identification unique de votre travail ; ce nom peut être pensé comme une "marque" (par exemple : pas de "projet-visualisation" mais plutôt "statistique-vente-armes" ou "weaponview")
  --->
