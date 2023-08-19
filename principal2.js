@@ -28,6 +28,19 @@ loadSound("Action3", "Music/Action 3.mp3")
 loadSound("Action4", "Music/Action 4.mp3")
 loadSound("Fx2", "Music/Fx 2.mp3")
 
+
+
+loadSound("PauseClackClunk", "SoundEffects/PauseClackClunk.wav")
+loadSound("Catchball", "SoundEffects/catch ball 1.wav")
+loadSound("HitDamage", "SoundEffects/Hit damage 1.wav")
+
+loadSound("BossHit", "SoundEffects/Boss hit 1.wav")
+loadSound("jumpSound", "SoundEffects/Jump 1.wav")
+loadSound("PollenAttack", "SoundEffects/Balloon Pop 1.wav")
+
+
+
+
 const music = play("Ambient2", {
 	loop: true,
     paused: false,
@@ -94,7 +107,13 @@ const musicDefaite = play("Fx2", {
     
 })
 
-volume(0.2)
+volume(0.5)
+
+
+
+
+
+
 
 
 
@@ -350,6 +369,11 @@ scene("accueil", () => {
 
     // Interaction avec ENTER
     onKeyPress("enter", () => {
+        const PauseSound = play("PauseClackClunk", {
+            loop: false,
+            paused: false,
+            volume: 0.5,
+        })
         go("Principal");
 
     })
@@ -629,6 +653,11 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
             if (levelId == 1 || levelId == 2 || levelId == 4 ) { // Not useful for now, but when it will be, the OR opperator is -->  (levelId == 1 || levelId == 4)
             player.onHurt(() => {
+                const HitSound = play("HitDamage", {
+                    loop: false,
+                    paused: false,
+                    
+                })
                 PlayerHealthbar.set(player.hp())
                 shake(10)
             })
@@ -690,7 +719,11 @@ onKeyPress("enter", () => {
 
     // If dialogue is active
     if (isDialogueActive) {
-
+        const PauseSound = play("PauseClackClunk", {
+            loop: false,
+            paused: false,
+            volume: 0.5,
+        })
         if (levelId ===0){
             // If it's the last dialogue
             if (curDialog === dialogs.length - 1) {
@@ -798,7 +831,8 @@ function SpeechBubbleSoundProgression() {
 
 //Boss related dialogue 
 function SpeechBubblePauseProgression() {
-    if (levelId !== 1 || levelId !== 2 || levelId !== 4) return;
+    if (levelId !== 1 && levelId !== 2 && levelId !== 4) return;
+
     if (!level.paused) return;
     if (!isBossAlive) return;
     
@@ -1444,7 +1478,7 @@ function toggleSpeechBubbleSound() {
 const dialogsPause = [
     "Qu'est-ce qui se passe ici ?",
 
-    "C'est quoi ce bruit ?",
+    "C'est quoi cette musique ?",
 
     "Tu ne peux pas être blessé?",
 
@@ -2143,10 +2177,15 @@ let spawner;
         function launchPollenCannonBall() {
             const pointA = vec2(width() / 4 * 3, height() / 2); //Starting point for the launch
             const pointB = player.pos.clone();
-        
+            const PollenAttackSound = play("PollenAttack", {
+                loop: false,
+                paused: false,
+                volume: 0.5,
+
+            })
             const direction = pointB.sub(pointA).unit();  // Calculate direction vector and normalize it || ChatGPT used lerp before, asked it to change and calculate a vector. This way, the ball is aimed at the player and if it misses, it doesn't just disappear. 
             const circleSpeed = 300;  
-        
+            
             const pollenCannonBall = add([
                 circle(7),
                 pos(pointA),
@@ -2166,6 +2205,7 @@ let spawner;
                     }
                 }
             ]);
+
         }
 
 
@@ -2308,6 +2348,11 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             
             boss.onHurt(() => {
+                const Hurt = play("BossHit", {
+                    loop: false,
+                    paused: false,
+                    volume: 0.5,
+                })
                 healthbar.set(boss.hp())
             })
 
@@ -2396,6 +2441,11 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             hoodedFigure.onStateEnter("jump", () => {
                 if (hoodedFigure.isGrounded()) {
+                    const jumpSound = play("jumpSound", {
+                        loop: false,
+                        paused: false,
+                        volume: 0.5,
+                    })
                     hoodedFigure.jump(JUMP_FORCE);
                     hoodedFigure.enterState("move2");  //goes to move2 state after the jump
                     toggleExclamationPoint2();
@@ -2636,10 +2686,13 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                         onKeyPress(key, () => {
                             player.play("run");
                         });
+                        
                     }
                 });
             });
 
+
+            
             isBossInvulnerable = true;
             wait(3, bossAttackPattern);
             
@@ -2718,6 +2771,11 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             
             boss.onHurt(() => {
+                const Hurt = play("BossHit", {
+                    loop: false,
+                    paused: false,
+                    volume: 0.5,
+                })
                 healthbar.set(boss.hp())
             })
 
@@ -3126,6 +3184,11 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             
             boss.onHurt(() => {
+                const Hurt = play("BossHit", {
+                    loop: false,
+                    paused: false,
+                    volume: 0.5,
+                })
                 healthbar.set(boss.hp())
             })
 
@@ -3711,7 +3774,9 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     fightMusic4.paused = true;
                     fightMusic4wasPlaying = true;
                 }
+
                 musicFin.paused = false;
+                musicFin.volume = 6;
                 borderIn(),
                 timerPaused = false;
                 isBossAlive = false
@@ -3829,6 +3894,10 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             if (canMove) {
                 if (player.isGrounded()) {
                     player.jump(JUMP_FORCE)
+                    const jumpSound = play("jumpSound", {
+                        loop: false,
+                        paused: false,
+                    })
                 }
             }
         });
@@ -3889,6 +3958,11 @@ let curTween = null;
 let bullet = 1; // Valeur nécessaire pour ne pas que ça plante quand on pause avant d'avoir tiré une fois.
 onKeyPress("escape", () => {
     level.paused = !level.paused;
+    const PauseSound = play("PauseClackClunk", {
+        loop: false,
+        paused: false,
+        volume: 0.5,
+    })
     if (curTween) curTween.cancel();
     curTween = tween(
         pauseMenu.pos,
@@ -3903,6 +3977,8 @@ onKeyPress("escape", () => {
     );
 
     if (level.paused) {
+        
+        
         pauseMenu.hidden = false;
         txtdePause.hidden = false;
         txtdePause2.hidden = false;
