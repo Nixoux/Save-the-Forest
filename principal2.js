@@ -48,7 +48,7 @@ loadSound("CapeSound", "SoundEffects/swoosh 1.wav")
 const CapeSound = play("CapeSound", {
 	loop: true,
     paused: true,
-    volume: 1
+    volume: 0.5
     
 })
 
@@ -564,7 +564,7 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 "B": () => [ // Mur invisible pour par retourner à la limite en arrière
                     sprite("Barrier"),
                     body({ isStatic: true }),
-                    area(),
+                    area({ collisionIgnore: ["hoodedFigure"] }),
                     anchor("bot"),
                     offscreen({ hide: true }),
                     "InvisibleWall"
@@ -2278,7 +2278,7 @@ let spawner;
         
 
 
-
+        //debug.inspect = true
     //------------
     //The red exclamation point to warn of Leaf Slap
     //------------   
@@ -2328,7 +2328,7 @@ let spawner;
 
 // --- Boss ---
 
-let BOSS_HEALTH = 100
+let BOSS_HEALTH = 2000
 let isBossAlive = true;
 let boss;
 let flowerPillar;
@@ -2358,7 +2358,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             timer.hidden = true;
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
-                area(),
+                area({ scale: 0.9 }),
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),
                 health(BOSS_HEALTH),
@@ -2579,90 +2579,113 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
 
 
-            function bossAttackPattern() {
-                
+function bossAttackPattern() {
+    if (!isBossAlive) return;
+    isBossInvulnerable = false;
+    
+    // Launch PollenCannonBall
+    launchPollenCannonBall();
+    wait(1, () => {
+        if (!isBossAlive) return;
+        launchPollenCannonBall();
+        wait(0.5, () => {
+            if (!isBossAlive) return;
+            launchPollenCannonBall();
+            wait(0.5, () => {
                 if (!isBossAlive) return;
-                isBossInvulnerable = false;
-                // Launch PollenCannonBall 6 times
                 launchPollenCannonBall();
-                wait(1, () => {
+                wait(0.5, () => {
                     if (!isBossAlive) return;
                     launchPollenCannonBall();
                     wait(1, () => {
                         if (!isBossAlive) return;
-                        
                         launchPollenCannonBall();
-                        wait(1, () => {
+                        wait(0.5, () => {
                             if (!isBossAlive) return;
-                            
                             launchPollenCannonBall();
                             wait(1, () => {
                                 if (!isBossAlive) return;
-                                
                                 launchPollenCannonBall();
-                                wait(1, () => {
+                                wait(0.5, () => {
                                     if (!isBossAlive) return;
-            
                                     launchPollenCannonBall();
                                     wait(1, () => {
                                         if (!isBossAlive) return;
-                                        isBossInvulnerable = true;
-                                        // Blink Warning 4 times
-                                        toggleWarningBLUE();
+                                        launchPollenCannonBall();
                                         wait(0.5, () => {
                                             if (!isBossAlive) return;
-                                            toggleWarningBLUE();
-                                            wait(0.5, () => {
+                                            launchPollenCannonBall();
+                                            wait(1, () => {
                                                 if (!isBossAlive) return;
+                                                isBossInvulnerable = true;
+                                                // Blink Warning 4 times
                                                 toggleWarningBLUE();
                                                 wait(0.5, () => {
                                                     if (!isBossAlive) return;
                                                     toggleWarningBLUE();
                                                     wait(0.5, () => {
                                                         if (!isBossAlive) return;
-                                                        isBossInvulnerable = false;
-                                                        // Launch FlowerPillar once
-                                                        toggleFlowerPillarPosition();
-                                                        wait(1, () => {
+                                                        toggleWarningBLUE();
+                                                        wait(0.5, () => {
                                                             if (!isBossAlive) return;
-                                                            toggleFlowerPillarPosition();
-                                                            
-                                                            // Launch PollenCannonBall 4 more times
-                                                            launchPollenCannonBall();
-                                                            wait(1, () => {
+                                                            toggleWarningBLUE();
+                                                            wait(0.5, () => {
                                                                 if (!isBossAlive) return;
-                                                                launchPollenCannonBall();
+                                                                isBossInvulnerable = false;
+                                                                // Launch FlowerPillar once
+                                                                toggleFlowerPillarPosition();
                                                                 wait(1, () => {
                                                                     if (!isBossAlive) return;
-            
+                                                                    toggleFlowerPillarPosition();
+                                                                    // Launch PollenCannonBall
                                                                     launchPollenCannonBall();
                                                                     wait(1, () => {
                                                                         if (!isBossAlive) return;
                                                                         launchPollenCannonBall();
-                                                                        wait(1, () => {
+                                                                        wait(0.5, () => {
                                                                             if (!isBossAlive) return;
-                                                                            isBossInvulnerable = true;
-                                                                            // Blink Warning 4 times
-                                                                            toggleWarningBLUE();
-                                                                            wait(0.5, () => {
+                                                                            launchPollenCannonBall();
+                                                                            wait(1, () => {
                                                                                 if (!isBossAlive) return;
-                                                                                toggleWarningBLUE();
+                                                                                launchPollenCannonBall();
                                                                                 wait(0.5, () => {
                                                                                     if (!isBossAlive) return;
-                                                                                    toggleWarningBLUE();
+                                                                                    launchPollenCannonBall();
                                                                                     wait(0.5, () => {
                                                                                         if (!isBossAlive) return;
-                                                                                        toggleWarningBLUE();
+                                                                                        launchPollenCannonBall();
                                                                                         wait(0.5, () => {
                                                                                             if (!isBossAlive) return;
-                                                                                            isBossInvulnerable = false;
-                                                                                            // Launch FlowerPillar again
-                                                                                            toggleFlowerPillarPosition();
+                                                                                            launchPollenCannonBall();
                                                                                             wait(1, () => {
                                                                                                 if (!isBossAlive) return;
-                                                                                                toggleFlowerPillarPosition();
-                                                                                                // Repeat the entire pattern
-                                                                                                bossAttackPattern();
+                                                                                                isBossInvulnerable = true;
+                                                                                                // Blink Warning 4 times
+                                                                                                toggleWarningBLUE();
+                                                                                                wait(0.5, () => {
+                                                                                                    if (!isBossAlive) return;
+                                                                                                    toggleWarningBLUE();
+                                                                                                    wait(0.5, () => {
+                                                                                                        if (!isBossAlive) return;
+                                                                                                        toggleWarningBLUE();
+                                                                                                        wait(0.5, () => {
+                                                                                                            if (!isBossAlive) return;
+                                                                                                            toggleWarningBLUE();
+                                                                                                            wait(0.5, () => {
+                                                                                                                if (!isBossAlive) return;
+                                                                                                                isBossInvulnerable = false;
+                                                                                                                // Launch FlowerPillar again
+                                                                                                                toggleFlowerPillarPosition();
+                                                                                                                wait(1, () => {
+                                                                                                                    if (!isBossAlive) return;
+                                                                                                                    toggleFlowerPillarPosition();
+                                                                                                                    // Repeat the entire pattern
+                                                                                                                    bossAttackPattern();
+                                                                                                                });
+                                                                                                            });
+                                                                                                        });
+                                                                                                    });
+                                                                                                });
                                                                                             });
                                                                                         });
                                                                                     });
@@ -2683,7 +2706,11 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                         });
                     });
                 });
-            }
+            });
+        });
+    });
+}
+
 
             //Prevents any action from the player when arriving in a boss battle.
             canMove=false
@@ -2791,7 +2818,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             CapeSound.paused = false;
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
-                area(),
+                area({ scale: 0.9 }),
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),
                 health(BOSS_HEALTH),
@@ -2873,7 +2900,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 sprite("Hero"),
                 pos(0, height()-64),
                 anchor("bot"),
-                area({ collisionIgnore: ["player","bullet","InvisibleWall"] }),
+                area({ collisionIgnore: ["player","bullet","InvisibleWall", "particle"] }),
                 body(),
                 state("idle"),  
                 "hoodedFigure"
@@ -2947,91 +2974,97 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
 
             //initializeTimer(),
-
             function bossAttackPattern() {
                 if (!isBossAlive) return;
                 isBossInvulnerable = false;
             
-                spawnParticlesAt(width() / 4*2.7, height()-63);
-                spawnParticlesAt(width() / 4*2.7, height()-63);
+                spawnParticlesAt(width() / 4 * 2.7, height() - 63);
+                spawnParticlesAt(width() / 4 * 2.7, height() - 63);
+            
                 wait(1, () => {
                     if (!isBossAlive) return;
                     launchPollenCannonBall();
-                    wait(1, () => {
+                    wait(0.5, () => {
                         if (!isBossAlive) return;
-                        
                         launchPollenCannonBall();
-                        wait(1, () => {
+                        wait(0.5, () => {
                             if (!isBossAlive) return;
-                            
                             launchPollenCannonBall();
-                            wait(1, () => {
+                            wait(0.5, () => {
                                 if (!isBossAlive) return;
-                                
                                 launchPollenCannonBall();
                                 wait(1, () => {
                                     if (!isBossAlive) return;
-            
                                     launchPollenCannonBall();
-                                    wait(1, () => {
+                                    wait(0.5, () => {
                                         if (!isBossAlive) return;
-                                        isBossInvulnerable = true;
-                                        // Blink Warning 4 times
-                                        toggleWarningBLUE();
-                                        wait(0.5, () => {
+                                        launchPollenCannonBall();
+                                        wait(1, () => {
                                             if (!isBossAlive) return;
-                                            toggleWarningBLUE();
+                                            launchPollenCannonBall();
                                             wait(0.5, () => {
                                                 if (!isBossAlive) return;
-                                                toggleWarningBLUE();
-                                                wait(0.5, () => {
+                                                launchPollenCannonBall();
+                                                wait(1, () => {
                                                     if (!isBossAlive) return;
+                                                    isBossInvulnerable = true;
+                                                    // Blink Warning 4 times
                                                     toggleWarningBLUE();
                                                     wait(0.5, () => {
                                                         if (!isBossAlive) return;
-                                                        isBossInvulnerable = false;
-                                                        // Launch FlowerPillar once
-                                                        toggleFlowerPillarPosition();
-                                                        wait(1, () => {
+                                                        toggleWarningBLUE();
+                                                        wait(0.5, () => {
                                                             if (!isBossAlive) return;
-                                                            toggleFlowerPillarPosition();
-                                                            
-                                                            // Launch PollenCannonBall 4 more times
-                                                            launchPollenCannonBall();
-                                                            wait(1, () => {
+                                                            toggleWarningBLUE();
+                                                            wait(0.5, () => {
                                                                 if (!isBossAlive) return;
-                                                                launchPollenCannonBall();
-                                                                wait(1, () => {
+                                                                toggleWarningBLUE();
+                                                                wait(0.5, () => {
                                                                     if (!isBossAlive) return;
-            
-                                                                    launchPollenCannonBall();
+                                                                    isBossInvulnerable = false;
+                                                                    // Launch FlowerPillar once
+                                                                    toggleFlowerPillarPosition();
                                                                     wait(1, () => {
                                                                         if (!isBossAlive) return;
+                                                                        toggleFlowerPillarPosition();
+                                                                        // Launch PollenCannonBall
                                                                         launchPollenCannonBall();
-                                                                        wait(1, () => {
+                                                                        wait(0.5, () => {
                                                                             if (!isBossAlive) return;
-                                                                            isBossInvulnerable = true;
-                                                                            // Blink Warning 4 times
-                                                                            toggleWarningBLUE();
+                                                                            launchPollenCannonBall();
                                                                             wait(0.5, () => {
                                                                                 if (!isBossAlive) return;
-                                                                                toggleWarningBLUE();
+                                                                                launchPollenCannonBall();
                                                                                 wait(0.5, () => {
                                                                                     if (!isBossAlive) return;
-                                                                                    toggleWarningBLUE();
-                                                                                    wait(0.5, () => {
+                                                                                    launchPollenCannonBall();
+                                                                                    wait(1, () => {
                                                                                         if (!isBossAlive) return;
+                                                                                        isBossInvulnerable = true;
+                                                                                        // Blink Warning 4 times
                                                                                         toggleWarningBLUE();
                                                                                         wait(0.5, () => {
                                                                                             if (!isBossAlive) return;
-                                                                                            isBossInvulnerable = false;
-                                                                                            // Launch FlowerPillar again
-                                                                                            toggleFlowerPillarPosition();
-                                                                                            wait(1, () => {
+                                                                                            toggleWarningBLUE();
+                                                                                            wait(0.5, () => {
                                                                                                 if (!isBossAlive) return;
-                                                                                                toggleFlowerPillarPosition();
-                                                                                                // Repeat the entire pattern
-                                                                                                bossAttackPattern();
+                                                                                                toggleWarningBLUE();
+                                                                                                wait(0.5, () => {
+                                                                                                    if (!isBossAlive) return;
+                                                                                                    toggleWarningBLUE();
+                                                                                                    wait(0.5, () => {
+                                                                                                        if (!isBossAlive) return;
+                                                                                                        isBossInvulnerable = false;
+                                                                                                        // Launch FlowerPillar again
+                                                                                                        toggleFlowerPillarPosition();
+                                                                                                        wait(1, () => {
+                                                                                                            if (!isBossAlive) return;
+                                                                                                            toggleFlowerPillarPosition();
+                                                                                                            // Repeat the entire pattern
+                                                                                                            bossAttackPattern();
+                                                                                                        });
+                                                                                                    });
+                                                                                                });
                                                                                             });
                                                                                         });
                                                                                     });
@@ -3053,6 +3086,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     });
                 });
             }
+            
  
             //Prevents any action from the player when arriving in a boss battle.
             canMove=false
@@ -3209,13 +3243,13 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
         //----------------LEVEL 4----------------------
 
-        let BOSS_HEALTH_FINAL = 800
+        let BOSS_HEALTH_FINAL = 5000
         if (levelId == 4 ) {
             timer.hidden = true;
             CapeSound.paused = false;
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
-                area(),
+                area({ scale: 0.9 }),
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),
                 health(BOSS_HEALTH_FINAL),
@@ -3434,19 +3468,19 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 wait(1, () => {
                     if (!isBossAlive) return;
                     launchPollenCannonBall();
-                    wait(1, () => {
+                    wait(0.5, () => {
                         if (!isBossAlive) return;
                         launchPollenCannonBall();
-                        wait(1, () => {
+                        wait(0.5, () => {
                             if (!isBossAlive) return;
                             launchPollenCannonBall();
-                            wait(1, () => {
+                            wait(0.5, () => {
                                 if (!isBossAlive) return;
                                 launchPollenCannonBall();
-                                wait(1, () => {
+                                wait(0.5, () => {
                                     if (!isBossAlive) return;
                                     launchPollenCannonBall();
-                                    wait(1, () => {
+                                    wait(0.5, () => {
                                         if (!isBossAlive) return;
                                         isBossInvulnerable = true;
                                         // Blink WarningBLUE 4 times
@@ -3518,45 +3552,68 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     });
                 });
             }
-            
             function secondPartOfPattern() {
-                togglePlatforms()
-                // Launch PollenCannonBall 2 times
+                togglePlatforms();
+                // Launch PollenCannonBall 4 times
                 launchPollenCannonBall();
-                wait(1, () => {
+                wait(0.5, () => {
                     if (!isBossAlive) return;
                     launchPollenCannonBall();
-                    wait(1, () => {
+                    wait(0.5, () => {
                         if (!isBossAlive) return;
-                        shouldSpawnParticles = true;
-                        spawnParticlesAt(width() / 4*2.7, height()-63);
-                        
-                        isBossInvulnerable = true;
-                        // Blink WarningBLUE 4 times
-                        toggleWarningBLUE();
+                        launchPollenCannonBall();
                         wait(0.5, () => {
                             if (!isBossAlive) return;
-                            toggleWarningBLUE();
-                            wait(0.5, () => {
+                            launchPollenCannonBall();
+                            wait(1, () => {
                                 if (!isBossAlive) return;
-                                toggleWarningBLUE();
+                                launchPollenCannonBall();
                                 wait(0.5, () => {
                                     if (!isBossAlive) return;
-                                    toggleWarningBLUE();
+                                    launchPollenCannonBall();
                                     wait(0.5, () => {
                                         if (!isBossAlive) return;
-                                        isBossInvulnerable = false;
-                                        // Launch FlowerPillar once
-                                        toggleFlowerPillarPosition();
-                                        wait(1, () => {
+                                        launchPollenCannonBall();
+                                        wait(0.5, () => {
                                             if (!isBossAlive) return;
-            
-                                            // Hide FlowerPillar
-                                            toggleFlowerPillarPosition();
-                                            wait(2, () => {
+                                            launchPollenCannonBall();
+                                            wait(1, () => {
                                                 if (!isBossAlive) return;
-                                                
-                                                secondPartOfPatternPart2();
+                                                shouldSpawnParticles = true;
+                                                spawnParticlesAt(width() / 4 * 2.7, height() - 63);
+            
+                                                isBossInvulnerable = true;
+                                                // Blink WarningBLUE 4 times
+                                                toggleWarningBLUE();
+                                                wait(0.5, () => {
+                                                    if (!isBossAlive) return;
+                                                    toggleWarningBLUE();
+                                                    wait(0.5, () => {
+                                                        if (!isBossAlive) return;
+                                                        toggleWarningBLUE();
+                                                        wait(0.5, () => {
+                                                            if (!isBossAlive) return;
+                                                            toggleWarningBLUE();
+                                                            wait(0.5, () => {
+                                                                if (!isBossAlive) return;
+                                                                isBossInvulnerable = false;
+                                                                // Launch FlowerPillar once
+                                                                toggleFlowerPillarPosition();
+                                                                wait(1, () => {
+                                                                    if (!isBossAlive) return;
+            
+                                                                    // Hide FlowerPillar
+                                                                    toggleFlowerPillarPosition();
+                                                                    wait(2, () => {
+                                                                        if (!isBossAlive) return;
+            
+                                                                        secondPartOfPatternPart2();
+                                                                    });
+                                                                });
+                                                            });
+                                                        });
+                                                    });
+                                                });
                                             });
                                         });
                                     });
@@ -3566,43 +3623,66 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     });
                 });
             }
-//Cut things out and ended up multiplying the second part of the pattern by 2. It was easier to work with at this stage. 
+            
             function secondPartOfPatternPart2() {
-                
-                // Launch PollenCannonBall 2 times
+                // Launch PollenCannonBall 4 times
                 launchPollenCannonBall();
-                wait(1, () => {
+                wait(0.5, () => {
                     if (!isBossAlive) return;
                     launchPollenCannonBall();
-                    wait(1, () => {
+                    wait(0.5, () => {
                         if (!isBossAlive) return;
-                        isBossInvulnerable = true;
-                        // Blink WarningBLUE 4 times
-                        toggleWarningBLUE();
-                        wait(0.5, () => {
+                        launchPollenCannonBall();
+                        wait(1, () => {
                             if (!isBossAlive) return;
-                            toggleWarningBLUE();
-                            wait(0.5, () => {
+                            launchPollenCannonBall();
+                            wait(1, () => {
                                 if (!isBossAlive) return;
-                                toggleWarningBLUE();
+                                launchPollenCannonBall();
                                 wait(0.5, () => {
                                     if (!isBossAlive) return;
-                                    toggleWarningBLUE();
+                                    launchPollenCannonBall();
                                     wait(0.5, () => {
                                         if (!isBossAlive) return;
-                                        isBossInvulnerable = false;
-                                        // Launch FlowerPillar once
-                                        toggleFlowerPillarPosition();
-                                        wait(1, () => {
+                                        launchPollenCannonBall();
+                                        wait(0.5, () => {
                                             if (!isBossAlive) return;
-            
-                                            // Hide FlowerPillar
-                                            toggleFlowerPillarPosition();
-                                            wait(2, () => {
+                                            launchPollenCannonBall();
+                                            wait(1, () => {
                                                 if (!isBossAlive) return;
-                                                shouldSpawnParticles = false;
-                                                togglePlatforms()
-                                                thirdPartOfPattern();
+                                                isBossInvulnerable = true;
+                                                // Blink WarningBLUE 4 times
+                                                toggleWarningBLUE();
+                                                wait(0.5, () => {
+                                                    if (!isBossAlive) return;
+                                                    toggleWarningBLUE();
+                                                    wait(0.5, () => {
+                                                        if (!isBossAlive) return;
+                                                        toggleWarningBLUE();
+                                                        wait(0.5, () => {
+                                                            if (!isBossAlive) return;
+                                                            toggleWarningBLUE();
+                                                            wait(0.5, () => {
+                                                                if (!isBossAlive) return;
+                                                                isBossInvulnerable = false;
+                                                                // Launch FlowerPillar once
+                                                                toggleFlowerPillarPosition();
+                                                                wait(1, () => {
+                                                                    if (!isBossAlive) return;
+            
+                                                                    // Hide FlowerPillar
+                                                                    toggleFlowerPillarPosition();
+                                                                    wait(2, () => {
+                                                                        if (!isBossAlive) return;
+                                                                        shouldSpawnParticles = false;
+                                                                        togglePlatforms();
+                                                                        thirdPartOfPattern();
+                                                                    });
+                                                                });
+                                                            });
+                                                        });
+                                                    });
+                                                });
                                             });
                                         });
                                     });
@@ -3612,6 +3692,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     });
                 });
             }
+            
             
             function thirdPartOfPattern() {
                 // Launch PollenCannonBall 8 times
@@ -3622,7 +3703,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     wait(1, () => {
                         if (!isBossAlive) return;
                         launchPollenCannonBall();
-                        wait(1, () => {
+                        wait(0.5, () => {
                             if (!isBossAlive) return;
                             launchPollenCannonBall();
                             wait(1, () => {
@@ -3631,10 +3712,10 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                                 wait(1, () => {
                                     if (!isBossAlive) return;
                                     launchPollenCannonBall();
-                                    wait(1, () => {
+                                    wait(0.5, () => {
                                         if (!isBossAlive) return;
                                         launchPollenCannonBall();
-                                        wait(1, () => {
+                                        wait(0.5, () => {
                                             if (!isBossAlive) return;
                                             launchPollenCannonBall();
                                             wait(1, () => {
