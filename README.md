@@ -15,7 +15,8 @@ La forêt, autrefois un sanctuaire de paix et de biodiversité, est aujourd'hui 
 
 <!---la procédure d’installation / de lancement --->
 # Lancement
-Pour jouer en ligne : https://nicolasverdes.itch.io/save-the-forest
+
+Pour jouer en ligne (Chrome hautement recommandé) : https://nicolasverdes.itch.io/save-the-forest
 
 Pour lancer le jeu en mode local : télécharger l'entier du répertoire, ouvrir Visual Studio Code et Go Live. 
 
