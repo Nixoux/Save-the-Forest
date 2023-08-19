@@ -4,7 +4,7 @@ une brève description (en français ou en anglais) de votre rendu et de ses fon
 <!--- <img width="768" alt="image" src="https://github.com/glitch1312/Fix-It/assets/96738339/fd947a11-68b2-48e4-8a66-aac71b826d6a"> --->
 
 
-"Save The Forest" est un petit jeu en pixel 2D écrit en Kaboom.js sur le danger des plantes invasives dans les forêts plongez dans un univers enchanté où chaque arbre, chaque plante et chaque créature compte pour l'équilibre de la nature. Incarnez une jeune sorcière en quête de préserver l'harmonie de sa forêt face à une menace sourde mais destructrice : L'ambroisie.
+"Save The Forest" est un petit jeu en pixel 2D écrit en Kaboom.js sur le danger des plantes invasives dans les forêts. Plongez dans un univers enchanté où chaque arbre, chaque plante et chaque créature compte pour l'équilibre de la nature. Incarnez une jeune sorcière en quête de préserver l'harmonie de sa forêt face à une menace sourde mais destructrice : L'ambroisie.
 
 
 La forêt, autrefois un sanctuaire de paix et de biodiversité, est aujourd'hui en danger. Une plante étrangère, à la croissance rapide, commence à étouffer la vie indigène. Armée de votre magie et de votre bonne volonté, vous, la petite sorcière, devez éradiquer cette plante envahissante avant qu'elle ne finisse par asphyxier toute la forêt et ses habitants.
