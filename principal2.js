@@ -37,7 +37,20 @@ loadSound("HitDamage", "SoundEffects/Hit damage 1.wav")
 loadSound("BossHit", "SoundEffects/Boss hit 1.wav")
 loadSound("jumpSound", "SoundEffects/Jump 1.wav")
 loadSound("PollenAttack", "SoundEffects/Balloon Pop 1.wav")
+loadSound("FlowerPillar", "SoundEffects/Suck 1V2.wav")
+loadSound("LeafSlap", "SoundEffects/Bubble heavy 2.wav")
 
+loadSound("PlatformBreak", "SoundEffects/Block Break 2.wav")
+loadSound("StepSound", "SoundEffects/footstep grass and leaves 1.wav")
+
+loadSound("CapeSound", "SoundEffects/swoosh 1.wav")
+
+const CapeSound = play("CapeSound", {
+	loop: true,
+    paused: true,
+    volume: 1
+    
+})
 
 
 
@@ -111,7 +124,11 @@ volume(0.5)
 
 
 
-
+const StepSound = play("StepSound", {
+	loop: true,
+    paused: true,
+    speed: 2,
+})
 
 
 
@@ -1160,6 +1177,7 @@ exclamationPoint.onStateUpdate("move", () => {
     const dir = vec2(320, height()/2).sub(exclamationPoint.pos).unit();
     exclamationPoint.move(dir.scale(170));  
     exclamationPointShadow.move(dir.scale(170)); 
+    
     // Stop moving when close enough to target
     if (exclamationPoint.pos.dist(vec2(320, height()/2)) < 5) {
         
@@ -2138,6 +2156,7 @@ let spawner;
 
 
         function createFlowerPillar() {
+
             return add([
                 rect(10, 50),
                 pos(vec2(-100, -100)),
@@ -2147,13 +2166,19 @@ let spawner;
                 outline(1),
                 "flowerPillar",
             ]);
- 
+
         
         }
         // Function to toggle object's position
         function toggleFlowerPillarPosition() {
 
             if (flowerPillar.pos.x < 0) {
+                const FlowerPillarSound = play("FlowerPillar", {
+                    loop: false,
+                    paused: false,
+                    volume: 1,
+    
+                })
                 flowerPillar.pos = vec2(width()/ 3, height()-63);  // Back to visible area
                 flowerPillar2.pos = vec2(width()/ 2, height()-63);
                 flowerPillar3.pos = vec2(width()/ 6, height()-63);
@@ -2180,7 +2205,7 @@ let spawner;
             const PollenAttackSound = play("PollenAttack", {
                 loop: false,
                 paused: false,
-                volume: 0.5,
+                volume: 1.2,
 
             })
             const direction = pointB.sub(pointA).unit();  // Calculate direction vector and normalize it || ChatGPT used lerp before, asked it to change and calculate a vector. This way, the ball is aimed at the player and if it misses, it doesn't just disappear. 
@@ -2430,7 +2455,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             hoodedFigure.onStateUpdate("move", () => {
                 const dir = vec2(340, height()-64).sub(hoodedFigure.pos).unit();
                 hoodedFigure.move(dir.scale(170)); 
-            
+                StepSound.paused = false;
                 // Stop moving when close enough to target
                 if (hoodedFigure.pos.dist(vec2(340, height()-64)) < 5) {
                     
@@ -2441,6 +2466,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             
             hoodedFigure.onStateEnter("jump", () => {
                 if (hoodedFigure.isGrounded()) {
+                    StepSound.paused = true;
                     const jumpSound = play("jumpSound", {
                         loop: false,
                         paused: false,
@@ -2474,13 +2500,14 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             hoodedFigure.onStateUpdate("move3", () => {
                 const dir = vec2(280, height()-64).sub(hoodedFigure.pos).unit();
                 hoodedFigure.move(dir.scale(170));  
-            
+                StepSound.paused = false;
                
                 if (hoodedFigure.pos.dist(vec2(280, height()-64)) < 5) {
                     
                     hoodedFigure.pos = vec2(280, height()-64);  
                     hoodedFigure.enterState("idle");
                     canMove = false;
+                    StepSound.paused = true;
                     toggleSpeechBubble2();
                     isDialogueActive = true;
                     cinematic=false;
@@ -2529,6 +2556,12 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             function toggleLeafSlapPosition() {
 
                 if (leafSlap.pos.x < 0) {
+                    const leafSlapSound = play("LeafSlap", {
+                        loop: false,
+                        paused: false,
+                        volume: 10,
+                    
+                    })
                     leafSlap.pos = vec2(width() / 4 * 3, height()-63);  
 
                 } else {
@@ -2685,6 +2718,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     if (canMove) {
                         onKeyPress(key, () => {
                             player.play("run");
+                            CapeSound.paused = false;
                         });
                         
                     }
@@ -2754,6 +2788,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
         if (levelId == 2 ) {
             timer.hidden = true;
+            CapeSound.paused = false;
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
                 area(),
@@ -2853,14 +2888,16 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             hoodedFigure.onStateUpdate("move", () => {
                 const dir = vec2(width(), height()-64).sub(hoodedFigure.pos).unit();
                 hoodedFigure.move(dir.scale(220));  
-            
+                StepSound.paused = false;
                 // Stop moving when close enough to target
                 if (hoodedFigure.pos.dist(vec2(width(), height()-64)) < 5) {
                     
                     hoodedFigure.pos = vec2(width(), height()-64);  
                     hoodedFigure.enterState("idle");
                     cinematic=false;
+                    StepSound.paused = true;
                 }
+                //StepSound.paused = true;
             });
 
             //-------------------------------------
@@ -2893,6 +2930,12 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             function toggleLeafSlapPosition() {
 
                 if (leafSlap.pos.x < 0) {
+                    const leafSlapSound = play("LeafSlap", {
+                        loop: false,
+                        paused: false,
+                        volume: 10,
+                    
+                    })
                     leafSlap.pos = vec2(width() / 4 * 3, height()-63);  
 
                 } else {
@@ -3046,6 +3089,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     if (canMove) {
                         onKeyPress(key, () => {
                             player.play("run");
+                            CapeSound.paused = false;
                         });
                     }
                 });
@@ -3092,7 +3136,8 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
         //----------------LEVEL 3----------------------
 
         if (levelId == 3 ) {
-
+            StepSound.paused = true;
+            
             let border3 = add([
                 rect(width(), 20),
                 pos(width() / 2,  height()-43), //pos(width() / 2, height()-43),
@@ -3167,6 +3212,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
         let BOSS_HEALTH_FINAL = 800
         if (levelId == 4 ) {
             timer.hidden = true;
+            CapeSound.paused = false;
             boss = add([
                 sprite("AmbroisieIdle",{ anims: { idle: 0} }),
                 area(),
@@ -3258,7 +3304,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             hoodedFigure.onStateUpdate("move", () => {
                 const dir = vec2(50, height()-64).sub(hoodedFigure.pos).unit();
                 hoodedFigure.move(dir.scale(100));  
-            
+                StepSound.paused = false;
                 // Stop moving when close enough to target
                 if (hoodedFigure.pos.dist(vec2(50, height()-64)) < 5) {
                     
@@ -3268,6 +3314,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     isDialogueActive = true;
                     toggleSpeechBubble4();
                     cinematic=false;
+                    StepSound.paused = true;
                 }
             });
 
@@ -3297,7 +3344,12 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             function togglePlatforms() {
                 if (platform1) {
                     platformsPresent = false;
-
+                    const PlatformBreak = play("PlatformBreak", {
+                        loop: false,
+                        paused: false,
+                        volume: 1,
+                    
+                    })
                     platform1.destroy();
                     platform1 = null;
             
@@ -3350,6 +3402,12 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             function toggleLeafSlapPosition() {
 
                 if (leafSlap.pos.x < 0) {
+                    const leafSlapSound = play("LeafSlap", {
+                        loop: false,
+                        paused: false,
+                        volume: 2,
+                    
+                    })
                     leafSlap.pos = vec2(width() / 4 * 3, height()-63);  
 
                 } else {
@@ -3732,6 +3790,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     if (canMove) {
                         onKeyPress(key, () => {
                             player.play("run");
+                            CapeSound.paused = false;
                         });
                     }
                 });
@@ -3897,6 +3956,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     const jumpSound = play("jumpSound", {
                         loop: false,
                         paused: false,
+                        volume: 0.5,
                     })
                 }
             }
@@ -3919,10 +3979,10 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
 
         })
         ;["left", "right", "up", "down"].forEach((key) => {
-            if (canMove) {
+            if (canMove || isDialogueActive) {
                 onKeyPress(key, () => {
                     player.play("run")
-            
+                    CapeSound.paused = false;
                 })
             }
             
@@ -3935,6 +3995,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                     
                 ) {
                     player.play("idle") //Crucial sinon l'animation ne marche pas.
+                    CapeSound.paused = true;
                 }
             
         }) 	
