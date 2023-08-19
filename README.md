@@ -26,8 +26,11 @@ Les assets visuels, sonores et les police d'écritures sont libres de droits pou
 
 
 Fonts: Alagard by Hewett Tsoi
+
 Sprites d'arrière plan: brullo
+
 Sprite du PNJ rouge : Penzilla
+
 Sound effects:  JDWasabi & FilmCow
 
 <!---le contexte de développement (exemple : Ce projet a été développé dans le cadre du cours <nom de l’enseignement> dispensé par Isaac Pante (SLI, Lettres, UNIL)). --->
