@@ -44,4 +44,5 @@ Attention : la récupération partielle de code est autorisée pour peu que la s
 
 # Crédits
 Nicolas Verdes : illustration et animation de la sorcière et d'Ambroisie 
+
 Nicolas Verdes : programmation et mécaniques de jeu
