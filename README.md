@@ -11,7 +11,7 @@ La forêt, autrefois un sanctuaire de paix et de biodiversité, est aujourd'hui 
 
 
 <!---#au moins une capture illustrant votre travail ; attention, pour la VR, un GIF est requis --->
-<img width="769" alt="image" src="https://github.com/Nixoux/Save-the-Forest/blob/main/assets/GameImage.png">
+<img width="300" alt="image" src="https://github.com/Nixoux/Save-the-Forest/blob/main/assets/GameImage.png">
 
 <!---la procédure d’installation / de lancement --->
 # Lancement
