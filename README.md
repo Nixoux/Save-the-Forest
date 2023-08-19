@@ -34,7 +34,7 @@ Sprite du PNJ rouge : Penzilla
 Sound effects:  JDWasabi & FilmCow
 
 <!---le contexte de développement (exemple : Ce projet a été développé dans le cadre du cours <nom de l’enseignement> dispensé par Isaac Pante (SLI, Lettres, UNIL)). --->
-# Comments
+# Contexte
 Ce jeu s'inscrit dans le cadre du cours dispensé par Isaac pante, *Dévelopement de Jeux Video 2D*, effectué en printemps 2023. (SLI, Lettres, UNIL).
 
 <!---Les limites de votre travail ainsi que les possibilités d’amélioration doivent apparaître comme « issues », assorties des étiquettes adéquates (bug, enhancement, etc.) et non dans le Readme. Gardez à l’esprit que cette description est destinée à d’autres personnes intéressées par votre code. --->
