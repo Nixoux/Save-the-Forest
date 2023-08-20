@@ -10,10 +10,10 @@ Plus qu'un simple divertissement, il joue un rôle de médiation scientifique, s
 
 La forêt, autrefois un sanctuaire de paix et de biodiversité, est aujourd'hui en danger. Une plante étrangère, à la croissance rapide, commence à étouffer la vie indigène.  Il est donc impératif d'agir vite. Armée de votre magie et de votre détermination, vous, la petite sorcière, avez la mission d'éliminer cette plante avant qu'elle ne finisse par asphyxier toute la forêt et ses habitants.
 
-
+<p align="center">
 <!---#au moins une capture illustrant votre travail ; attention, pour la VR, un GIF est requis --->
 <img width="500" alt="image" src="https://github.com/Nixoux/Save-the-Forest/blob/main/assets/GameImage.png">
-
+</p>
 <!---la procédure d’installation / de lancement --->
 # Lancement
 
