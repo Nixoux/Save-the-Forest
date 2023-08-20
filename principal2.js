@@ -26,6 +26,18 @@ loadSpriteAtlas("Sprites/Hero.png", "Sprites/Hero.json");
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
 
 
+loadShader("redTint", null, `
+    vec4 frag(vec2 pos, vec2 uv, vec4 color, sampler2D tex) {
+        vec4 texColor = texture2D(tex, uv);
+        
+        // Increase intensity by 5%
+        texColor.rgb *= 1.05;  // this brightens the color by 5%
+        
+        return texColor;
+    }
+`);
+
+
 //LOAD DE CHAQUE MUSIQUE.
 loadSound("Ambient2", "Music/Ambient 2.mp3")
 loadSound("Ambient3", "Music/Ambient 3.mp3")
@@ -54,6 +66,7 @@ loadSound("StepSound", "SoundEffects/footstep grass and leaves 1.wav")
 loadSound("CapeSound", "SoundEffects/swoosh 1.wav")
 
 loadSound("BulletSound", "SoundEffects/Shoot_2.wav")
+
 
 //Sound the character makes when going forward
 const CapeSound = play("CapeSound", {
@@ -668,9 +681,27 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 
 
 
+        const tint = add([
+            rect(width(), height()+50),
+            pos(-300,-300),
+            color(0,0,0),
+            opacity(0.1),
+            area(),
+            z(0),
+            anchor("topleft"),
+        ])
 
 
+        function toggleTint() {
+            if (tint.pos.y < 0) {
+                tint.pos = vec2(0,-50); 
 
+            } else {
+            
+                tint.pos = vec2(-300, -300); 
+
+            }
+        }
 // --- Player ---
 
         const PLAYER_HEALTH = 200;
@@ -701,6 +732,32 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 })
                 PlayerHealthbar.set(player.hp())
                 shake(10)
+                
+                
+                if (player.hp() === 180) {
+                    toggleTint();
+                    tint.color = rgb(235, 60, 80); // Starting point
+                } else if (player.hp() === 160) {
+                    tint.color = rgb(235, 40, 60); // 20 units decrease in G and B channels
+                } else if (player.hp() === 140) {
+                    tint.color = rgb(155, 20, 40); // 20 units decrease in G and B channels
+                    tint.opacity = 0.2
+                } else if (player.hp() === 120) {
+                    tint.color = rgb(155, 10, 30); // 20 units decrease in G and B channels
+                } else if (player.hp() === 100) {
+                    tint.color = rgb(135, 0, 20);   // 20 units decrease in Red channel
+                    tint.opacity = 0.3
+                } else if (player.hp() === 80) {
+                    tint.color = rgb(115, 0, 20);   // 20 units decrease in Red channel
+                } else if (player.hp() === 60) {
+                    tint.color = rgb(95, 0, 20);   // 20 units decrease in Red channel
+                    tint.opacity = 0.4
+                } else if (player.hp() === 40) {
+                    tint.color = rgb(75, 0, 20);   // 20 units decrease in Red channel
+                } else if (player.hp() === 20) {
+                    tint.color = rgb(55, 0, 20);   // Darkest red
+                }
+            
             })
             
                 const PlayerHealthbar = player.add([
