@@ -4,10 +4,11 @@ une brève description (en français ou en anglais) de votre rendu et de ses fon
 <img width="500" alt="image" src="https://github.com/Nixoux/Save-the-Forest/blob/main/assets/Title.png"> 
 
 
-"Save The Forest" est un petit jeu en pixel 2D écrit en Kaboom.js sur le danger des plantes invasives dans les forêts. Plongez dans un univers enchanté où chaque arbre, chaque plante et chaque créature compte pour l'équilibre de la nature. Incarnez une jeune sorcière en quête de préserver l'harmonie de sa forêt face à une menace sourde mais destructrice : L'ambroisie.
+"Save The Forest" est un petit jeu en pixel 2D écrit en Kaboom.js sur le danger des plantes invasives dans les forêts. Plongez dans un univers enchanté où chaque arbre, chaque plante et chaque créature compte pour l'équilibre de la nature. Incarnez une jeune sorcière en quête de préserver l'harmonie de sa forêt face à une menace sourde mais destructrice : L'ambroisie. 
 
+Plus qu'un simple divertissement, il joue un rôle de médiation scientifique, sensibilisant le joueur à l'impact de l'ambroisie en tant que plante invasive.
 
-La forêt, autrefois un sanctuaire de paix et de biodiversité, est aujourd'hui en danger. Une plante étrangère, à la croissance rapide, commence à étouffer la vie indigène. Armée de votre magie et de votre bonne volonté, vous, la petite sorcière, devez éradiquer cette plante envahissante avant qu'elle ne finisse par asphyxier toute la forêt et ses habitants.
+La forêt, autrefois un sanctuaire de paix et de biodiversité, est aujourd'hui en danger. Une plante étrangère, à la croissance rapide, commence à étouffer la vie indigène.  Il est donc impératif d'agir vite. Armée de votre magie et de votre détermination, vous, la petite sorcière, avez la mission d'éliminer cette plante avant qu'elle ne finisse par asphyxier toute la forêt et ses habitants.
 
 
 <!---#au moins une capture illustrant votre travail ; attention, pour la VR, un GIF est requis --->
@@ -31,6 +32,8 @@ Fonts: Alagard by Hewett Tsoi
 Sprites d'arrière plan: brullo
 
 Sprite du PNJ rouge : Penzilla
+
+Musique : alkakrab
 
 Sound effects:  JDWasabi & FilmCow
 
