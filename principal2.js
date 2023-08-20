@@ -737,24 +737,32 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
                 if (player.hp() === 180) {
                     toggleTint();
                     tint.color = rgb(235, 60, 80); // Starting point
-                } else if (player.hp() === 160) {
+                }
+                if (player.hp() === 160) {
                     tint.color = rgb(235, 40, 60); // 20 units decrease in G and B channels
-                } else if (player.hp() === 140) {
+                }
+                if (player.hp() === 140) {
                     tint.color = rgb(155, 20, 40); // 20 units decrease in G and B channels
                     tint.opacity = 0.2
-                } else if (player.hp() === 120) {
+                }
+                if (player.hp() === 120) {
                     tint.color = rgb(155, 10, 30); // 20 units decrease in G and B channels
-                } else if (player.hp() === 100) {
+                }
+                if (player.hp() === 100) {
                     tint.color = rgb(135, 0, 20);   // 20 units decrease in Red channel
                     tint.opacity = 0.3
-                } else if (player.hp() === 80) {
+                }
+                if (player.hp() === 80) {
                     tint.color = rgb(115, 0, 20);   // 20 units decrease in Red channel
-                } else if (player.hp() === 60) {
+                }
+                if (player.hp() === 60) {
                     tint.color = rgb(95, 0, 20);   // 20 units decrease in Red channel
                     tint.opacity = 0.4
-                } else if (player.hp() === 40) {
+                }
+                if (player.hp() === 40) {
                     tint.color = rgb(75, 0, 20);   // 20 units decrease in Red channel
-                } else if (player.hp() === 20) {
+                }
+                if (player.hp() === 20) {
                     tint.color = rgb(55, 0, 20);   // Darkest red
                 }
             
@@ -2445,7 +2453,6 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),
                 health(BOSS_HEALTH),
-                
                 scale(1.5),
                 anchor("bot"),
                 "enemy","boss"
