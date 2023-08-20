@@ -53,7 +53,7 @@ loadSound("StepSound", "SoundEffects/footstep grass and leaves 1.wav")
 
 loadSound("CapeSound", "SoundEffects/swoosh 1.wav")
 
-
+loadSound("BulletSound", "SoundEffects/Shoot_2.wav")
 
 //Sound the character makes when going forward
 const CapeSound = play("CapeSound", {
@@ -283,8 +283,8 @@ scene("accueil", () => {
     
     
     const InstruRec = add([
-        rect(103, 78, { radius: 4 }),
-        pos(center().x+115, center().y-25),
+        rect(123, 78, { radius: 4 }),
+        pos(center().x+95, center().y-25),
         color(255,255,255),
         anchor("topleft"),
         fixed(),
@@ -294,7 +294,7 @@ scene("accueil", () => {
     ]);
 
     const Instruction1 = add([
-        text("Attaquer :  ⎵ ", {
+        text("Attaquer : ESPACE ", {
             size: 40,
             align: "left",
             
@@ -302,7 +302,7 @@ scene("accueil", () => {
         color(0, 0, 0),
         z(3),
         anchor("left"),
-        pos(center().x+120, center().y -15),
+        pos(center().x+100, center().y -15),
         scale(0.3),
 
         opacity(0.9)
@@ -317,7 +317,7 @@ scene("accueil", () => {
         color(0, 0, 0),
         z(3),
         anchor("left"),
-        pos(center().x+120, center().y +5),
+        pos(center().x+100, center().y +5),
         scale(0.3)
     ]);
     const Instruction3 = add([
@@ -330,11 +330,11 @@ scene("accueil", () => {
         color(0, 0, 0),
         z(3),
         anchor("left"),
-        pos(center().x+120, center().y + 25),
+        pos(center().x+100, center().y + 25),
         scale(0.3)
     ]);
     const Instruction4 = add([
-        text("Valider  :  ↵ ", {
+        text("Valider  : ↵ ", {
             size: 40,
             align: "left",
 
@@ -343,7 +343,7 @@ scene("accueil", () => {
         color(0, 0, 0),
         z(3),
         anchor("left"),
-        pos(center().x+120, center().y + 45), 
+        pos(center().x+100, center().y + 45), 
         scale(0.3)
     ]);
 
@@ -4007,6 +4007,13 @@ function bossAttackPattern() {
         const BULLET_SPEED = 1200;
         function spawnBullet(p) {
             if (canMove) {
+                const BulletSound = play("BulletSound", {
+                    loop: false,
+                    paused: false,
+                    volume:0.1,
+                    //
+                    
+                })
                 bullet = add([
                     rect(12, 2),
                     area(),
