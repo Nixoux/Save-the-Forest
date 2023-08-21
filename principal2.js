@@ -21,7 +21,9 @@ loadSpriteAtlas("Sprites/sol2.png", "Sprites/sol2.json");
 loadSpriteAtlas("Sprites/Hero.png", "Sprites/Hero.json");
 
 
-
+loadSpriteAtlas("Sprites/Ambroisie1.png", "Sprites/Ambroisie1.json");
+loadSpriteAtlas("Sprites/Ambroisie2.png", "Sprites/Ambroisie2.json");
+loadSpriteAtlas("Sprites/Ambroisie3.png", "Sprites/Ambroisie3.json");
 //LOAD DE FONT
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
 
@@ -2448,7 +2450,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
         if (levelId == 1 ) {
             timer.hidden = true;
             boss = add([
-                sprite("AmbroisieIdle",{ anims: { idle: 0} }),
+                sprite("Ambroisie1",{ anims: { idle: 0} }),
                 area({ scale: 0.9 }),
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),
@@ -2907,7 +2909,7 @@ function bossAttackPattern() {
             timer.hidden = true;
             CapeSound.paused = false;
             boss = add([
-                sprite("AmbroisieIdle",{ anims: { idle: 0} }),
+                sprite("Ambroisie2",{ anims: { idle: 0} }),
                 area({ scale: 0.9 }),
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),
@@ -3338,7 +3340,7 @@ function bossAttackPattern() {
             timer.hidden = true;
             CapeSound.paused = false;
             boss = add([
-                sprite("AmbroisieIdle",{ anims: { idle: 0} }),
+                sprite("Ambroisie3",{ anims: { idle: 0} }),
                 area({ scale: 0.9 }),
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),

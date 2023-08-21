@@ -1,0 +1,18 @@
+{
+    "Ambroisie2":{
+        "x":0,
+        "y":0,
+        "width":1392,
+        "height":56,
+        "sliceX": 24,
+        "anims": {
+            "idle": {
+              "from": 0,
+              "to": 23,
+              "speed": 10,
+              "loop": true
+              
+            }
+          }
+    }
+}
