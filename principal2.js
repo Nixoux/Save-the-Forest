@@ -26,6 +26,7 @@ loadSpriteAtlas("Sprites/Ambroisie2.png", "Sprites/Ambroisie2.json");
 loadSpriteAtlas("Sprites/Ambroisie3.png", "Sprites/Ambroisie3.json");
 loadSpriteAtlas("Sprites/FlowerPillar1.png", "Sprites/FlowerPillar1.json");
 loadSpriteAtlas("Sprites/Leafslap.png", "Sprites/Leafslap.json");
+loadSpriteAtlas("Sprites/PollenCannonball.png", "Sprites/PollenCannonball.json");
 
 //LOAD DE FONT
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
@@ -2310,13 +2311,11 @@ let spawner;
             const circleSpeed = 300;  
             
             const pollenCannonBall = add([
-                circle(7),
+                sprite("PollenCannonball"),
                 pos(pointA),
-                color(255, 100, 0),
                 anchor("bot"),
                 area(),
                 offscreen({ destroy: true }),
-                outline(3),
                 "pollenCannonBall",
                 {
                     update() {
