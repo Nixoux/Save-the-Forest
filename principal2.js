@@ -24,6 +24,7 @@ loadSpriteAtlas("Sprites/Hero.png", "Sprites/Hero.json");
 loadSpriteAtlas("Sprites/Ambroisie1.png", "Sprites/Ambroisie1.json");
 loadSpriteAtlas("Sprites/Ambroisie2.png", "Sprites/Ambroisie2.json");
 loadSpriteAtlas("Sprites/Ambroisie3.png", "Sprites/Ambroisie3.json");
+loadSpriteAtlas("Sprites/FlowerPillar1.png", "Sprites/FlowerPillar1.json");
 //LOAD DE FONT
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
 
@@ -2251,12 +2252,13 @@ let spawner;
         function createFlowerPillar() {
 
             return add([
-                rect(10, 50),
+                sprite("FlowerPillar1"),
+                //rect(10, 50),
                 pos(vec2(-100, -100)),
                 area(),
                 anchor("bot"),
-                color(127, 127, 255),
-                outline(1),
+                //color(127, 127, 255),
+                //outline(1),
                 "flowerPillar",
             ]);
 
@@ -2272,9 +2274,10 @@ let spawner;
                     volume: 1,
     
                 })
-                flowerPillar.pos = vec2(width()/ 3, height()-63);  // Back to visible area
-                flowerPillar2.pos = vec2(width()/ 2, height()-63);
-                flowerPillar3.pos = vec2(width()/ 6, height()-63);
+                flowerPillar.pos = vec2(width()/ 3, height()-65);  // Back to visible area
+                flowerPillar2.pos = vec2(width()/ 2, height()-65);
+                flowerPillar3.pos = vec2(width()/ 6, height()-65);
+                
             } 
             else {
                 flowerPillar.pos = vec2(-100, -100);  // Out of playable area
