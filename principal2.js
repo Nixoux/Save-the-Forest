@@ -25,6 +25,8 @@ loadSpriteAtlas("Sprites/Ambroisie1.png", "Sprites/Ambroisie1.json");
 loadSpriteAtlas("Sprites/Ambroisie2.png", "Sprites/Ambroisie2.json");
 loadSpriteAtlas("Sprites/Ambroisie3.png", "Sprites/Ambroisie3.json");
 loadSpriteAtlas("Sprites/FlowerPillar1.png", "Sprites/FlowerPillar1.json");
+loadSpriteAtlas("Sprites/Leafslap.png", "Sprites/Leafslap.json");
+
 //LOAD DE FONT
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
 
@@ -2423,7 +2425,7 @@ let spawner;
 
 
 // --- Boss ---
-
+let BOSS_HEALTH_First = 1500
 let BOSS_HEALTH = 2000
 let isBossAlive = true;
 let boss;
@@ -2457,7 +2459,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 area({ scale: 0.9 }),
                 body({ isStatic: true }),
                 pos(width() / 4 * 3, height()-63),
-                health(BOSS_HEALTH),
+                health(BOSS_HEALTH_First),
                 scale(1.5),
                 anchor("bot"),
                 "enemy","boss"
@@ -2484,7 +2486,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 z(2),
                 outline(2),
                 {
-                    max: BOSS_HEALTH,
+                    max: BOSS_HEALTH_First,
                     set(hp) {
                         this.width = width()/2 * hp / this.max
                     },
@@ -2498,7 +2500,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                 z(1),
                 outline(2),
                 {
-                    max: BOSS_HEALTH,
+                    max: BOSS_HEALTH_First,
                 }
             ])
             const BossName = add([
@@ -2637,7 +2639,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
             //----------------------------
 
             let leafSlap = add([
-                rect(width()/1.5, 50),
+                rect(280, 50),
                 pos(vec2(-100, -100)),
                 area(),
                 anchor("botright"),
@@ -2657,7 +2659,7 @@ let cinematic = false; //Nécessaire pour contrer les speedrunners qui veulent s
                         volume: 10,
                     
                     })
-                    leafSlap.pos = vec2(width() / 4 * 3, height()-63);  
+                    leafSlap.pos = vec2(width() / 4 * 3 -20, height()-63);  
 
                 } else {
                     leafSlap.pos = vec2(-100, -100);  
@@ -3519,12 +3521,12 @@ function bossAttackPattern() {
             //-------------------------------------
 
             let leafSlap = add([
-                rect(width()/1.5, 50),
+                sprite("Leafslap"),
                 pos(vec2(-100, -100)),
                 area(),
                 anchor("botright"),
-                color(255, 127, 127),
-                outline(1),
+                //color(255, 127, 127),
+                //outline(1),
                 "leafSlap",
             ]);
 
@@ -3537,10 +3539,10 @@ function bossAttackPattern() {
                         volume: 2,
                     
                     })
-                    leafSlap.pos = vec2(width() / 4 * 3, height()-63);  
+                    leafSlap.pos = vec2(width() / 4 * 3-50, height()-63);  
 
                 } else {
-                    leafSlap.pos = vec2(-100, -100);  
+                    leafSlap.pos = vec2(-100-20, -100);  
 
                 }
             }
