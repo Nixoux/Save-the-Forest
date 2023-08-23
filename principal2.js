@@ -2863,6 +2863,25 @@ function bossAttackPattern() {
                 SpeechBubbleSoundProgression() 
                 //These lines pauses the player when the enemy dies. 
                 
+                wait(1.8, () => {
+                    boss.hidden = true;
+                    wait(0.2, () => {
+                        boss.hidden = false;
+                        wait(0.2, () => {
+                            boss.hidden = true;
+                            wait(0.2, () => {
+                                boss.hidden = false;
+                                wait(0.2, () => {
+                                    boss.hidden = true;
+                                    wait(0.2, () => {
+                                        boss.hidden = false;
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+                
                 wait(1.5, () => {
                     canMove=false
                 })
@@ -3235,6 +3254,25 @@ function bossAttackPattern() {
                 cinematic=true;
                 borderIn()
                 SpeechBubbleSoundProgression() 
+
+                wait(1.8, () => {
+                    boss.hidden = true;
+                    wait(0.2, () => {
+                        boss.hidden = false;
+                        wait(0.2, () => {
+                            boss.hidden = true;
+                            wait(0.2, () => {
+                                boss.hidden = false;
+                                wait(0.2, () => {
+                                    boss.hidden = true;
+                                    wait(0.2, () => {
+                                        boss.hidden = false;
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
                 wait(0.5, () => {
                     canMove=false
                     
@@ -4021,6 +4059,24 @@ function bossAttackPattern() {
                 cinematic=true;
                 isDialogueActive =true;
                 SpeechBubbleSoundProgression() 
+                wait(1.8, () => {
+                    boss.hidden = true;
+                    wait(0.2, () => {
+                        boss.hidden = false;
+                        wait(0.2, () => {
+                            boss.hidden = true;
+                            wait(0.2, () => {
+                                boss.hidden = false;
+                                wait(0.2, () => {
+                                    boss.hidden = true;
+                                    wait(0.2, () => {
+                                        boss.hidden = false;
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
                 wait(1.5, () => {
                     canMove=false
                 })
