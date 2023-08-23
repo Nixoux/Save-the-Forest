@@ -28,6 +28,7 @@ loadSpriteAtlas("Sprites/FlowerPillar1.png", "Sprites/FlowerPillar1.json");
 loadSpriteAtlas("Sprites/Leafslap.png", "Sprites/Leafslap.json");
 loadSpriteAtlas("Sprites/PollenCannonball.png", "Sprites/PollenCannonball.json");
 
+loadSpriteAtlas("Sprites/RealAmbroisia.png", "Sprites/RealAmbroisia.json");
 //LOAD DE FONT
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
 
@@ -820,6 +821,28 @@ scene("Principal", ({levelId} = {levelId: 0}) => {
 //Dialog related functions. Inspired by the kaboom playground, this tutorial : https://www.youtube.com/watch?v=8i2K7uwh124&list=LL&index=2 and with the help of CHATGPT.
 //-------------------------------
 
+const RealAmbrosia = add([
+    sprite("RealAmbroisia"),
+    pos(width()/4*3+30, height()/2+20),
+    anchor("bot"),
+    scale(0.1),
+    z(11),
+   
+])
+
+const RealAmbrosiaRect = add([
+    rect(81,96),
+    pos(width()/4*3+30, height()/2+23),
+    anchor("bot"),
+    color(0,0,0),
+    z(10),
+
+
+])
+
+RealAmbrosia.hidden = true
+RealAmbrosiaRect.hidden = true
+
 
 let isDialogueActive = false;
 
@@ -837,6 +860,14 @@ onKeyPress("enter", () => {
             volume: 0.5,
         })
         if (levelId ===0){
+            if (curDialog ==0) {
+                RealAmbrosia.hidden = false
+                RealAmbrosiaRect.hidden = false
+            }
+            if (curDialog ==5) {
+                RealAmbrosia.hidden = true
+                RealAmbrosiaRect.hidden = true
+            }
             // If it's the last dialogue
             if (curDialog === dialogs.length - 1) {
                 toggleSpeechBubble();  // Call the toggle function
@@ -1002,13 +1033,14 @@ function FightCountdownProgression() {
 //-----------------------------------------
 const dialogs = [
     "Sorcière, la forêt murmure d'un danger...",
-    "...une plante envahissante nommée Ambroisie...",
+    "...une plante envahissante nommée[green] Ambroisie[/green]...",
     "Elle ne devrait pas se trouver ici.",
-    "Les plantes envahissantes comme Ambroisie nuisent à la forêt...",
+    "Les plantes envahissantes comme[green] Ambroisie[/green] nuisent à la forêt...",
     " étouffant la vie de nos espèces natives.",
     "Sorcière, je t'en supplie, débarrasse-nous-en!",
     "Le temps presse et la forêt souffre."
 ];
+
 
 let curDialog = 0;
 
@@ -1073,13 +1105,22 @@ let speechBubbleInstructionBubble = add([
 
 // Text inside the Speech Bubble
 const speechText = add([
-    text(dialogs[curDialog], { size: 40, width: 700, align: "center",font: "alagard", }),
+    text(dialogs[curDialog], {
+        size: 40, 
+        width: 700, 
+        align: "center",
+        font: "alagard",
+        styles: {
+            "green": (idx, ch) => ({
+                color: rgb(79, 152, 84),
+            }),
+        }
+    }),
     pos(speechBubble.pos.x, speechBubble.pos.y),
     anchor("center"),
     color(255, 255, 255),
     scale(0.25)
 ]);
-
 
 //function that displays or hides the elements.
 function toggleSpeechBubble() {
@@ -1112,7 +1153,7 @@ function toggleSpeechBubble() {
 //DIALOGS LEVELID 1
 //-----------------------------------------
 const dialogs2 = [
-    "Vous devez agir rapidement! Ambroisie se reproduit à un rythme alarmant.",
+    "Vous devez agir rapidement![green] Ambroisie[/green] se reproduit à un rythme alarmant.",
     "Si on ne la contrôle pas, la forêt et ses habitants seront en grand danger.",
 ];
 
@@ -1171,7 +1212,17 @@ let speechBubbleInstructionBubble2 = add([
 
 
 const speechText2 = add([
-    text(dialogs2[curDialog2], { size: 40, width: 700, align: "center",font: "alagard", }),
+    text(dialogs2[curDialog2], {         
+        size: 40, 
+        width: 700, 
+        align: "center",
+        font: "alagard",
+        styles: {
+            "green": (idx, ch) => ({
+                color: rgb(79, 152, 84),
+            }),
+        }
+    }),
     pos(speechBubble2.pos.x, speechBubble2.pos.y),
     anchor("center"),
     color(255, 255, 255),
@@ -1299,7 +1350,9 @@ exclamationPoint.onStateUpdate("move", () => {
 //DIALOGS LEVELID 3
 //-----------------------------------------
 const dialogs3 = [
-    "Poursuivez, l'air m'étouffe un peu... Je vais prendre une pause."
+    "Encore une seule[green] Ambroisie[/green] à éliminer!",
+    "Le pollen est tellement dense ici, j'ai du mal à respirer.",
+    "Poursuivez, je vais me tenir en retrait le temps de reprendre mon souffle."
 ];
 
 let curDialog3 = 0;
@@ -1357,7 +1410,17 @@ let speechBubbleInstructionBubble3 = add([
 
 
 const speechText3 = add([
-    text(dialogs3[curDialog3], { size: 40, width: 700, align: "center",font: "alagard", }),
+    text(dialogs3[curDialog3], {        
+        size: 40, 
+        width: 700, 
+        align: "center",
+        font: "alagard",
+        styles: {
+            "green": (idx, ch) => ({
+                color: rgb(79, 152, 84),
+            }),
+        }
+    }),
     pos(speechBubble3.pos.x, speechBubble3.pos.y),
     anchor("center"),
     color(255, 255, 255),
@@ -1397,7 +1460,7 @@ function toggleSpeechBubble3() {
 
 const dialogs4 = [
     "Vous l'avez terrassé? Merci beaucoup!!!",
-    "En plus d'asphyxier notre forêt, Ambroisie est hautement allergène pour les humains.",
+    "En plus d'asphyxier notre forêt,[green] Ambroisie[/green] est hautement allergène pour les humains.",
     "Son absence sera bénéfique pour tous!",
     " La forêt et moi-même vous sommes profondément reconnaissants."
 ];
@@ -1457,7 +1520,17 @@ let speechBubbleInstructionBubble4 = add([
 
 
 const speechText4 = add([
-    text(dialogs4[curDialog4], { size: 40, width: 700, align: "center",font: "alagard", }),
+    text(dialogs4[curDialog4], {        
+        size: 40, 
+        width: 700, 
+        align: "center",
+        font: "alagard",
+        styles: {
+            "green": (idx, ch) => ({
+                color: rgb(79, 152, 84),
+            }),
+        }
+    }),
     pos(speechBubble4.pos.x, speechBubble4.pos.y),
     anchor("center"),
     color(255, 255, 255),
@@ -1974,6 +2047,7 @@ function togglefightCount() {
 
 
 
+            
             //let exclamationPoint = add([
             //    rect(10,5),  // for example, a 20x20 square
             //    pos(-100, -100),  // initially off-screen
@@ -3459,7 +3533,7 @@ function bossAttackPattern() {
                 sprite("Hero"),
                 pos(0, height()-64),
                 anchor("bot"),
-                area({ collisionIgnore: ["player","bullet","InvisibleWall"] }),
+                area({ collisionIgnore: ["player","bullet","InvisibleWall", "particle"] }),
                 body(),
                 state("idle"),  
                 "hoodedFigure"
