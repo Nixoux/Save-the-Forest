@@ -29,6 +29,7 @@ loadSpriteAtlas("Sprites/Leafslap.png", "Sprites/Leafslap.json");
 loadSpriteAtlas("Sprites/PollenCannonball.png", "Sprites/PollenCannonball.json");
 
 loadSpriteAtlas("Sprites/RealAmbroisia.png", "Sprites/RealAmbroisia.json");
+loadSpriteAtlas("Sprites/PurplebulletSprite1.png", "Sprites/PurplebulletSprite1.json");
 //LOAD DE FONT
 loadFont("alagard", "Sprites/alagard.ttf") //Have to credit it. 
 
@@ -4215,17 +4216,17 @@ function bossAttackPattern() {
                     
                 })
                 bullet = add([
-                    rect(20, 6),
+                    sprite("PurplebulletSprite"),//,{ anims: { idle: 0} }//
                     area(),
                     pos(p),
                     anchor("center"),
-                    color(127, 127, 255),
-                    outline(0),
-                   move(player.dir, BULLET_SPEED),
+                    //color(251,146,43),
+                    move(player.dir, BULLET_SPEED),
                     offscreen({ destroy: true }),
                     "bullet"
                 ])
             }
+            //bullet.play("idle")
         }
 
         onKeyPress("space", () => {
