@@ -4215,12 +4215,12 @@ function bossAttackPattern() {
                     
                 })
                 bullet = add([
-                    rect(12, 2),
+                    rect(20, 6),
                     area(),
                     pos(p),
                     anchor("center"),
                     color(127, 127, 255),
-                    outline(4),
+                    outline(0),
                    move(player.dir, BULLET_SPEED),
                     offscreen({ destroy: true }),
                     "bullet"
